@@ -2493,20 +2493,27 @@ button.icon.lg {
  ==================== */
 
 .cu-form-group {
+	margin-top: 20upx;
 	background-color: var(--white);
 	padding: 1upx 30upx;
 	display: flex;
 	align-items: center;
-	min-height: 100upx;
-	justify-content: space-between;
+	min-height: 50upx;
+	/* justify-content: space-between; */
+	justify-content: flex-start;
 }
 
 .cu-form-group+.cu-form-group {
-	border-top: 1upx solid #eee;
+	/* border-top: 1upx solid #eee; */
+	
+}
+.cu-form-group:first-child {
+	margin-top: 0;
 }
 
 .cu-form-group .title {
-	text-align: justify;
+	/* text-align: justify; */
+	align-self: flex-start;
 	padding-right: 30upx;
 	font-size: 30upx;
 	position: relative;
@@ -2519,6 +2526,7 @@ button.icon.lg {
 	font-size: 30upx;
 	color: #555;
 	padding-right: 20upx;
+	align-self: flex-start
 }
 
 .cu-form-group>text[class*="cuIcon-"] {
@@ -2528,13 +2536,15 @@ button.icon.lg {
 }
 
 .cu-form-group textarea {
-	margin: 32upx 0 30upx;
-	height: 4.6em;
+	/* margin: 32upx 0 30upx; */
+	height: 3.6em;
 	width: 100%;
-	line-height: 1.2em;
+	line-height: 1.8em;
 	flex: 1;
-	font-size: 28upx;
+	/* font-size: 28upx; */
 	padding: 0;
+	font-size: 30upx;
+	align-self: flex-start
 }
 
 .cu-form-group.align-start .title {

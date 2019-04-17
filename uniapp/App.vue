@@ -47,11 +47,8 @@
 	}
 	.page {
 		width: 100%;
-		height: auto;
-		min-height: 100%;
-		position: absolute;
+		height: 100%;
 		background-color: #ffffff;
-		padding-bottom: 30upx;
 	}
 
 	.page-block {

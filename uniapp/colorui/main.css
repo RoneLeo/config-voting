@@ -1704,7 +1704,7 @@ button.icon.lg {
 	width: 100%;
 	height: 0.6rem;
 	left: 0.6rem;
-	opacity: 0.3;
+	opacity: 0.2;
 	z-index: 0;
 }
 
@@ -2555,19 +2555,22 @@ button.icon.lg {
 
 .cu-form-group picker {
 	flex: 1;
+	min-width: 300upx;
+	min-height: 60upx;
 	padding-right: 40upx;
 	overflow: hidden;
 	position: relative;
 }
 
 .cu-form-group picker .picker {
-	line-height: 100upx;
+	line-height: 60upx;
+	height: 60upx;
 	font-size: 28upx;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
 	width: 100%;
-	text-align: right;
+	text-align: left;
 }
 
 .cu-form-group picker::after {
@@ -2577,7 +2580,7 @@ button.icon.lg {
 	position: absolute;
 	font-size: 34upx;
 	color: var(--grey);
-	line-height: 100upx;
+	line-height: 60upx;
 	width: 60upx;
 	text-align: center;
 	top: 0;

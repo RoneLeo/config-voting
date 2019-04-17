@@ -8,7 +8,15 @@
 			<button class="cu-btn shadow-blur bg-blue" style="margin-left: 30upx;" @tap="gotoMark">打分类</button>
 			<button class="cu-btn shadow-blur bg-blue" style="margin-left: 30upx;" @tap="addBtnShowChange">x</button>
 		</view>
-		
+		<view class="cu-bar search bg-white">
+			<view class="search-form round">
+				<text class="cuIcon-search"></text>
+				<input @focus="InputFocus" @blur="InputBlur" :adjust-position="false" type="text" placeholder="搜索图片、文章、视频" confirm-type="search"></input>
+			</view>
+			<view class="action">
+				<button class="cu-btn bg-blue shadow-blur round">搜索</button>
+			</view>
+		</view>
 		<view>
 			<view class="cu-bar justify-start bg-white">
 				<view class="action sub-title">
@@ -18,7 +26,7 @@
 			</view>
 			<view class="cu-list menu-avatar">
 				<view class="cu-item radius shadow bg-white margin-top margin" :class="modalName=='move-box-'+ index?'move-cur':''"
-				 v-for="(item,index) in 4" :key="index" @touchstart="ListTouchStart" @touchmove="ListTouchMove" @touchend="ListTouchEnd"
+				 v-for="(item,index) in 2" :key="index" @touchstart="ListTouchStart" @touchmove="ListTouchMove" @touchend="ListTouchEnd"
 				 :data-target="'move-box-' + index">
 					<view class="cu-avatar round lg" :style="[{backgroundImage:'url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100'+ (index+2) +'.jpg)'}]"></view>
 					<view class="content">
@@ -38,113 +46,74 @@
 			</view>
 		</view>
 
-		<view>
+		<view class="page-block">
 			<view class="cu-bar justify-start bg-white">
 				<view class="action sub-title">
 					<text class="text-xl text-bold text-green">未完成</text>
 					<text class="bg-green" style="width:2rem"></text>
 				</view>
 			</view>
-			<view>
-				item1
+			<view class="cu-timeline">
+				<view class="cu-time">06-17</view>
+				
+					<view class="cu-item">
+						<view class="content">
+							<view class="cu-tag bg-green light radius">01:00</view><navigator url="../../pages/vote/vote"> 【2019九室爱岗敬业选举】</navigator>
+						</view>
+					</view>
+				
+				
+				<view class="cu-item">
+					<view class="content">
+						<view class="cu-tag bg-green light radius">10:00</view> 【工会科室会议表决】
+					</view>
+				</view>
+				<view class="cu-item">
+					<view class="content">
+						<view class="cu-tag bg-green light radius">10:00</view>
+						<navigator url="../../pages/mark/mark">【科研组专家打分活动】</navigator>
+					</view>
+				</view>
 			</view>
-			<view>
-				item2
-			</view>
+
 		</view>
 
-		<view>
+		<view class="page-block">
 			<view class="cu-bar justify-start bg-white">
 				<view class="action sub-title">
 					<text class="text-xl text-bold text-blue">已完成</text>
-					<text class="text-ABC text-blue">Done</text>
+					<text class="bg-blue" style="width:2rem"></text>
 				</view>
 			</view>
 			<view class="cu-timeline">
 				<view class="cu-time">昨天</view>
-				<view class="cu-item cur cuIcon-noticefill">
-					<view class="content bg-green shadow-blur">
-						<text>22:22</text> 【广州市】快件已到达地球
-					</view>
-				</view>
-				<view class="cu-item text-red cuIcon-attentionforbidfill">
-					<view class="content bg-red shadow-blur">
-						这是第一次，我家的铲屎官走了这么久。久到足足有三天！！
-					</view>
-				</view>
-				<view class="cu-item text-grey cuIcon-evaluate_fill">
-					<view class="content bg-grey shadow-blur">
-						这是第一次，我家的铲屎官走了这么久。
-					</view>
-				</view>
 				<view class="cu-item text-blue">
-					<view class="bg-blue content">
-						<text>20:00</text> 【月球】快件已到达月球，准备发往地球
+					<view class="content bg-blue shadow-blur">
+						<text>20:00</text> 【2019XX党支部支部互评】
+						<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
 					</view>
-					<view class="bg-cyan content">
-						<text>10:00</text> 【银河系】快件已到达银河系，准备发往月球
-					</view>
-				</view>
-			</view>
-
-			<view class="cu-timeline">
-				<view class="cu-time">06-17</view>
-				<view class="cu-item">
-					<view class="content">
-						<text>01:30</text> 【喵星】 MX-12138 已揽收，准备发往银河系
+					<view class="content bg-cyan shadow-blur">
+						<text>10:00</text> 【开发组-专业组技术带头人打分】
+						<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
 					</view>
 				</view>
-			</view>
-
-			<view class="cu-timeline">
-				<view class="cu-time">06-17</view>
-				<view class="cu-item">
-					<view class="content">
-						<view class="cu-capsule radius">
-							<view class="cu-tag bg-cyan">上午</view>
-							<view class="cu-tag line-cyan">10:00</view>
-						</view>
-						<view class="margin-top">这是第一次，我家的铲屎官走了这么久。久到足足有三天！！ 在听到他的脚步声响在楼梯间的那一刻，我简直想要破门而出，对着他狠狠地吼上10分钟，然后再看心情要不要他进门。</view>
-					</view>
-				</view>
+				<view class="cu-time">03-10</view>
 				<view class="cu-item text-blue">
-					<view class="bg-blue shadow-blur content">
-						<view class="cu-list menu-avatar radius">
-							<view class="cu-item">
-								<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
-								<view class="content">
-									<view class="text-grey">文晓港</view>
-									<view class="text-gray text-sm">
-										<text class="cuIcon-infofill text-red"></text> 消息未送达</view>
-								</view>
-								<view class="action">
-									<view class="text-grey text-xs">22:20</view>
-									<view class="cu-tag round bg-grey sm">5</view>
-								</view>
-							</view>
-							<view class="cu-item">
-								<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);">
-									<view class="cu-tag badge">99+</view>
-								</view>
-								<view class="content">
-									<view class="text-grey">文晓港
-										<view class="cu-tag round orange sm">SVIP</view>
-									</view>
-									<view class="text-gray text-sm">
-										<text class="cuIcon-redpacket_fill text-red"></text> 收到红包</view>
-								</view>
-								<view class="action">
-									<view class="text-grey text-xs">22:20</view>
-									<text class="cuIcon-notice_forbid_fill text-gray"></text>
-								</view>
-							</view>
-						</view>
+					<view class="content bg-blue shadow-blur">
+						<text>20:00</text> 【开发组-专业组技术带头人打分】
+						<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
+					</view>
+				</view>
+				
+				<view class="cu-time">02-01</view>
+				<view class="cu-item text-blue">
+					<view class="bg-blue content shadow-blur">
+						<text>20:00</text> 【2019XX党支部支部互评】
+						<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
 					</view>
 				</view>
 			</view>
 		</view>
-
-		
 	</view>
 </template>
 
@@ -161,19 +130,19 @@
 				addBtnShow: true
 			}
 		},
-		
+
 		onLoad() {
 
 		},
 		methods: {
 			gotoVote() {
 				uni.navigateTo({
-					url:'../../pages/vote/vote'
+					url: '../../pages/addVote/addVote'
 				})
 			},
 			gotoMark() {
 				uni.navigateTo({
-					url: '../../pages/mark/mark'
+					url: '../../pages/addMark/addMark'
 				})
 			},
 			addBtnShowChange() {
@@ -214,6 +183,7 @@
 		align-items: center;
 		z-index: 1000;
 	}
+
 	.opt-btn {
 		position: fixed;
 		bottom: 50upx;
@@ -229,23 +199,13 @@
 		font-size: 22px;
 		z-index: 1000;
 	}
-
-	/* input[type='file'] {
-		outline: none; border: 0;
-	} */
-	/* .content {
-		text-align: center;
-		height: 400upx;
+	
+	.page-block {
+		margin-top: 40upx;
+	}
+	
+	.timeline-item-delete {
+		width: 35upx;height: 35upx;position: absolute;top: 6px;right: 6px;
 	}
 
-	.logo {
-		height: 200upx;
-		width: 200upx;
-		margin-top: 200upx;
-	}
-
-	.title {
-		font-size: 36upx;
-		color: #8f8f94;
-	} */
 </style>

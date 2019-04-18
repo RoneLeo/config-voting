@@ -11,7 +11,7 @@
 		<view class="cu-bar search bg-white">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input @focus="InputFocus" @blur="InputBlur" :adjust-position="false" type="text" placeholder="搜索图片、文章、视频" confirm-type="search"></input>
+				<input @focus="InputFocus" @blur="InputBlur" :adjust-position="false" type="text" placeholder="搜索投票、打分活动等" confirm-type="search"></input>
 			</view>
 			<view class="action">
 				<button class="cu-btn bg-blue shadow-blur round">搜索</button>
@@ -89,11 +89,11 @@
 				<view class="cu-time">昨天</view>
 				<view class="cu-item text-blue">
 					<view class="content bg-blue shadow-blur">
-						<text>20:00</text> 【2019XX党支部支部互评】
+						<text>20:00</text> <navigator url="../voteCount/voteCount">【2019XX党支部支部互评】</navigator>
 						<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
 					</view>
 					<view class="content bg-cyan shadow-blur">
-						<text>10:00</text> 【开发组-专业组技术带头人打分】
+						<text>10:00</text><navigator url="../markCount/markCount"> 【开发组-专业组技术带头人打分】</navigator>
 						<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
 					</view>
 				</view>
@@ -130,7 +130,6 @@
 				addBtnShow: true
 			}
 		},
-
 		onLoad() {
 
 		},

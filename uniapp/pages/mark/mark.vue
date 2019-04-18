@@ -48,7 +48,6 @@
 				<button class="cu-btn bg-blue shadow-blur">提交打分结果</button>
 			</view>
 			
-			
 			<!-- <view class="vote-tt" style="display: flex;justify-content: flex-start;">
 				<view>投票注解：</view>
 				<view class="vote-subtt">
@@ -72,6 +71,8 @@
 		data() {
 			return {
 				isBack: false,
+				
+				
 			};
 		},
 		mounted() {
@@ -84,6 +85,7 @@
 			}
 		},
 		methods: {
+			
 			gotoMarkTitle() {
 				uni.navigateTo({
 					url: '../../pages/markTitle/markTitle'

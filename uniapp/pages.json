@@ -14,11 +14,27 @@
             "style" : {}
         },
         {
-            "path" : "pages/voteTitle/voteTitle",
+            "path" : "pages/addMark/addMark",
             "style" : {}
         },
         {
-            "path" : "pages/voteOption/voteOption",
+            "path" : "pages/addVote/addVote",
+            "style" : {}
+        },
+        {
+            "path" : "pages/addVoteTitle/addVoteTitle",
+            "style" : {}
+        },
+        {
+            "path" : "pages/markTitle/markTitle",
+            "style" : {}
+        },
+        {
+            "path" : "pages/markCount/markCount",
+            "style" : {}
+        },
+        {
+            "path" : "pages/voteCount/voteCount",
             "style" : {}
         }
     ],

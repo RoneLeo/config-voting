@@ -2,7 +2,9 @@ import Vue from 'vue'
 import App from './App'
 
 import cuCustom from './colorui/components/cu-custom.vue'
+import range from './components/range-slider/range-slider.vue'
 Vue.component('cu-custom',cuCustom)
+Vue.component('Range',range)
 
 Vue.config.productionTip = false
 

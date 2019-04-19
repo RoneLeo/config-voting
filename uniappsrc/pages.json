@@ -36,6 +36,10 @@
         {
             "path" : "pages/voteCount/voteCount",
             "style" : {}
+        },
+        {
+            "path" : "pages/code/code",
+            "style" : {}
         }
     ],
     "globalStyle" : {

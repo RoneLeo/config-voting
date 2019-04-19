@@ -25,27 +25,28 @@
 					<text class="mark-name">lucy</text>
 					<text class="mark-status">未完成</text>
 					<text class="mark-opt">
-						<view @tap="gotoMarkTitle" class='cu-tag radius light bg-blue'>打分</view>
+						<text   class='cu-tag radius light bg-blue'>打分</text>
 					</text>
 				</view>
 				<view class="mark-item">
 					<text class="mark-name">Lily</text>
 					<text class="mark-status">未完成</text>
 					<text class="mark-opt">
-						<view class='cu-tag radius light bg-blue'>打分</view>
+						<text @tap="gotoMarkTitle" class='cu-tag radius light bg-blue'>打分</text>
 					</text>
 				</view>
 				<view class="mark-item">
 					<text class="mark-name">张三</text>
 					<text class="mark-status">未完成</text>
 					<text class="mark-opt">
-						<view class='cu-tag radius light bg-blue'>打分</view>
+						<text @tap="gotoMarkTitle" class='cu-tag radius light bg-blue'>打分</text>
 					</text>
 				</view>
 			</view>
 			
 			<view style="margin-top: 50upx;text-align: center;">
-				<button class="cu-btn bg-blue shadow-blur">提交打分结果</button>
+				<button v-show="!js" class="cu-btn bg-blue shadow-blur">提交打分结果</button>
+				<button v-show="js == 1" @tap="gotoCodePage" class="cu-btn bg-blue shadow-blur">发布活动并生成二维码</button>
 			</view>
 			
 			<!-- <view class="vote-tt" style="display: flex;justify-content: flex-start;">
@@ -71,21 +72,27 @@
 		data() {
 			return {
 				isBack: false,
-				
+				ID: null,
+				js: null
 				
 			};
 		},
 		mounted() {
 			
 		},
-		onLoad() {
-			console.log(getCurrentPages())
+		onLoad(params) {
+			this.ID = params.id; //获取到轰动id来更新数据
+			this.js = params.js
 			if (getCurrentPages().length > 1) {
 				this.isBack = true;
 			}
 		},
 		methods: {
-			
+			gotoCodePage() {
+				uni.navigateTo({
+					url: '../../pages/code/code?id=10'
+				})
+			},
 			gotoMarkTitle() {
 				uni.navigateTo({
 					url: '../../pages/markTitle/markTitle'

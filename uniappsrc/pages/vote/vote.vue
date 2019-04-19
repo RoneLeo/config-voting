@@ -27,11 +27,11 @@
 							<view class="item-td padding-sm">
 								<radio-group @change="radioChange" style="width: 100%;">
 									<label v-for="(item, index) in 4" :key="item">
-										<radio :value="item" :checked="index === 1" />
-										<text class="label-text">
+										<radio :value="''+item" :checked="index === 1" />
+										<view class="label-text">
 											某某{{item}}某某{{item}}某某{{item}}某某{{item}}某某{{item}}某某{{item}}某某{{item}}某某{{item}}某某{{item}}
 											<view class="detail">详情</view>
-										</text>
+										</view>
 									</label>
 								</radio-group>
 							</view>
@@ -48,9 +48,9 @@
 
 							<view class="item-td padding-sm">
 								<checkbox-group @change="checkboxChange">
-									<label v-for="item in 5" :key="item">
-										<checkbox :value="item" :checked="index == 2" />
-										<text class="label-text">多选项{{item}}多选项{{item}}</text>
+									<label v-for="(item, index) in 5" :key="item">
+										<checkbox :value="''+item" :checked="index == 2" />
+										<view class="label-text">多选项{{item}}多选项{{item}}</view>
 									</label>
 								</checkbox-group>
 							</view>
@@ -63,12 +63,11 @@
 								<view class='cu-tag radius bg-blue' style="margin-right: 20upx;">不定项</view>
 								你认为下面谁最应该获得最佳奖项？
 							</view>
-
 							<view class="item-td padding-sm">
 								<checkbox-group>
-									<label v-for="item in 4" :key="item">
-										<checkbox :value="item" :checked="index == 2" />
-										<text class="label-text">不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}</text>
+									<label v-for="(item, index) in 4" :key="item">
+										<checkbox :value="''+item" :checked="index == 2" />
+										<view class="label-text">不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}</view>
 									</label>
 								</checkbox-group>
 							</view>
@@ -122,12 +121,14 @@
 			//#endif
 		},
 		onLoad() {
-			console.log(getCurrentPages())
 			if (getCurrentPages().length > 1) {
 				this.isBack = true;
 			}
 		},
 		methods: {
+			checkboxChange(e) {
+				console.log(e)
+			},
 			lastOne() {
 				this.current--;
 				// 				var num = this.currentItem.replace(/[^0-9]/ig, "");

@@ -8,7 +8,7 @@
 			<button class="cu-btn shadow-blur bg-blue" style="margin-left: 30upx;" @tap="gotoMark">打分类</button>
 			<button class="cu-btn shadow-blur bg-blue" style="margin-left: 30upx;" @tap="addBtnShowChange">x</button>
 		</view>
-		<view class="cu-bar search bg-white">
+		<view class="cu-bar search bg-white" style="position: fixed; width: 750upx; top: 0; left: 0;z-index: 1000;">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
 				<input @focus="InputFocus" @blur="InputBlur" :adjust-position="false" type="text" placeholder="搜索投票、打分活动等" confirm-type="search"></input>
@@ -17,7 +17,7 @@
 				<button class="cu-btn bg-blue shadow-blur round">搜索</button>
 			</view>
 		</view>
-		<view>
+		<view style="margin-top: 100upx;">
 			<view class="cu-bar justify-start bg-white">
 				<view class="action sub-title">
 					<text class="text-xl text-bold text-orange">未发布</text>
@@ -25,21 +25,21 @@
 				</view>
 			</view>
 			<view class="cu-list menu-avatar">
-				<view class="cu-item radius shadow bg-white margin-top margin" :class="modalName=='move-box-'+ index?'move-cur':''"
-				 v-for="(item,index) in 2" :key="index" @touchstart="ListTouchStart" @touchmove="ListTouchMove" @touchend="ListTouchEnd"
-				 :data-target="'move-box-' + index">
-					<view class="cu-avatar round lg" :style="[{backgroundImage:'url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100'+ (index+2) +'.jpg)'}]"></view>
+				<view class="cu-item" :class="modalName=='move-box-'+ index?'move-cur':''" v-for="(item,index) in 2" :key="index"
+				 @touchstart="ListTouchStart" @touchmove="ListTouchMove" @touchend="ListTouchEnd" :data-target="'move-box-' + index">
+				 <!-- <image class="cu-avatar round lg" src="../../static/img/vote3.png" mode=""></image> -->
+					<view  class="cu-avatar round lg" :style="[{backgroundImage:'url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100'+ (index+2) +'.jpg)'}]"></view>
 					<view class="content">
-						<view class="text-grey">文晓港</view>
+						<view class="text-grey">2019九室爱岗敬业选举</view>
 						<view class="text-gray text-sm">
-							<text class="cuIcon-infofill text-red  margin-right-xs"></text> 消息未送达</view>
+							<text class="cuIcon-infofill text-red  margin-right-xs"></text> 2019-06-17 ~ 2019-07-20</view>
 					</view>
-					<view class="action">
+					<!-- <view class="action">
 						<view class="text-grey text-xs">22:20</view>
 						<view class="cu-tag round bg-grey sm">5</view>
-					</view>
+					</view> -->
 					<view class="move">
-						<view class="bg-grey">置顶</view>
+						<view class="bg-green"><navigator url="../../pages/mark/mark?id=10&js=1">发布</navigator></view>
 						<view class="bg-red">删除</view>
 					</view>
 				</view>
@@ -55,14 +55,11 @@
 			</view>
 			<view class="cu-timeline">
 				<view class="cu-time">06-17</view>
-				
 					<view class="cu-item">
 						<view class="content">
 							<view class="cu-tag bg-green light radius">01:00</view><navigator url="../../pages/vote/vote"> 【2019九室爱岗敬业选举】</navigator>
 						</view>
 					</view>
-				
-				
 				<view class="cu-item">
 					<view class="content">
 						<view class="cu-tag bg-green light radius">10:00</view> 【工会科室会议表决】
@@ -71,11 +68,10 @@
 				<view class="cu-item">
 					<view class="content">
 						<view class="cu-tag bg-green light radius">10:00</view>
-						<navigator url="../../pages/mark/mark">【科研组专家打分活动】</navigator>
+						<navigator url="../../pages/mark/mark?id=10">【科研组专家打分活动】</navigator>
 					</view>
 				</view>
 			</view>
-
 		</view>
 
 		<view class="page-block">

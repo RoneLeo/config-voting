@@ -41,7 +41,10 @@ public class UserController {
     public ApiResult add(@RequestParam @ApiParam(value = "登录账号", required = true) String zh,
                          @RequestParam @ApiParam(value = "登录密码", required = true) String mm,
                          @RequestParam(required = false) @ApiParam(value = "用户姓名") String mc) {
+        if (!userService.existsByZh(zh))
+            return ApiResult.FAILURE("已存在该账号用户");
         UserEntity userEntity = new UserEntity();
+
         try {
             userEntity.setMm(MD5Util.MD5(mm));
         } catch (Exception e) {

@@ -18,4 +18,8 @@ public class UserServiceImpl {
     public UserEntity save(UserEntity userEntity) {
         return userRepository.save(userEntity);
     }
+
+    public boolean existsByZh(String zh) {
+        return userRepository.existsByZh(zh);
+    }
 }

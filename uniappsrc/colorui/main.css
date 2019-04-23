@@ -2597,6 +2597,15 @@ button.icon.lg {
 /* ==================
          模态窗口
  ==================== */
+ .cu-modal textarea {
+	 flex: 1;
+	 height: 4rem;
+	 font-size: inherit;
+	 line-height: 1.8;
+ }
+ .cu-modal input {
+	  text-align: left;
+  }
 
 .cu-modal {
 	position: fixed;

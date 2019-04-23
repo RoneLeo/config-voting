@@ -1,10 +1,11 @@
 <template>
 	<view class="page">
+		<login></login>
 		<cu-custom v-show="isBack" bgColor="bg-blue" :isBack="isBack">
 			<block slot="content" style="width: calc(100% - 100px);">2019九室爱岗敬业选举</block>
 		</cu-custom>
 		<view class="vote-wrapper padding-xl">
-			<view class="vote-tt" style="font-size: 18px;text-align: center;line-height: 3;border-bottom: 1px solid #eee;">
+			<view class="vote-tt title" style="font-size: 18px;">
 				2019九室爱岗敬业选举统计结果
 			</view>
 			<view class="vote-tt" style="margin-top: 40upx;">

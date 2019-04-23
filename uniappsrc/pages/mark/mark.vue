@@ -1,11 +1,12 @@
 <template>
 	<view class="page">
+		<login></login>
 		<cu-custom v-show="isBack" bgColor="bg-blue" :isBack="isBack">
 			<block slot="content" style="width: calc(100% - 100px);">科研组专家打分活动</block>
 		</cu-custom>
 
 		<view class="vote-wrapper padding">
-			<view class="vote-tt" style="font-size: 18px;text-align: center;line-height: 3;border-bottom: 1px solid #eee;">
+			<view class="vote-tt title" style="font-size: 18px;">
 				2019科研组专家打分活
 			</view>
 			<view class="vote-tt" style="margin-top: 40upx;">
@@ -25,7 +26,7 @@
 					<text class="mark-name">lucy</text>
 					<text class="mark-status">未完成</text>
 					<text class="mark-opt">
-						<text   class='cu-tag radius light bg-blue'>打分</text>
+						<text @tap="gotoMarkTitle" class='cu-tag radius light bg-blue'>打分</text>
 					</text>
 				</view>
 				<view class="mark-item">

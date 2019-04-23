@@ -1,5 +1,6 @@
 <template>
 	<view class="page">
+		<login></login>
 		<cu-custom bgColor="bg-blue" :isBack="true">
 			<block slot="content">发起评分活动</block>
 		</cu-custom>
@@ -14,11 +15,7 @@
 				<view class="title">投票主题</view>
 				<input placeholder="请填写投票主题" name="input"></input>
 			</view>
-			<!-- <view class="cu-form-group">
-				<view class="title">投票对象</view>
-				<input placeholder="请填写投票主题" name="input"></input>
-			</view>
- -->
+		
 			<view class="cu-form-group">
 				<view class="title">开始日期</view>
 				<picker mode="date" :value="startDate" start="2015-09-01" end="2020-09-01" @change="startDateChange">
@@ -36,11 +33,6 @@
 				</picker>
 			</view>
 
-
-			<!-- <view class="cu-form-group">
-				<view class="title">是否匿名</view>
-				<switch class='blur' @change="SwitchB" :class="switchB?'checked':''" :checked="switchB?true:false"></switch>
-			</view> -->
 			<view class="cu-form-group">
 				<view class="title">投票说明</view>
 				<textarea maxlength="-1" @input="textareaBInput" placeholder="多行文本输入框"></textarea>
@@ -62,7 +54,7 @@
 		<view class="padding">
 			<view class="justify-center text-blue" @tap="showModal" style="border: 1px dashed #ccc; border-radius: 10upx;height: 60upx;display: flex;align-items: center;font-size: 18px;">+</view>
 		</view>
-		<view class="cu-modal" :class="modalShow?'show':''">
+		<view class="cu-modal" :class="modalShow?'show':''" style="text-align: center;">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white justify-end">
 					<view class="content">{{modalTitle}}</view>
@@ -70,15 +62,21 @@
 						<text class="cuIcon-close text-red"></text>
 					</view>
 				</view>
-				<view class="padding-xl justify-start" style="display: flex;">
-					<text style="line-height: 60upx;margin-right: 20upx;">对象名字</text>
-					<input v-model="cpdx" placeholder="请填写参评对象名字"></input>
+				<view class="padding-xl">
+					<view class="justify-start" style="display: flex;">
+						<text style="line-height: 60upx;margin-right: 20upx;">对象名字</text>
+						<input v-model="cpdx" placeholder="请填写参评对象名字"></input>
+					</view>
+					<view class="justify-start" style="display: flex;">
+						<text style="line-height: 60upx;margin-right: 20upx;">对象描述</text>
+						<textarea v-model="cpdxms" maxlength="-1" placeholder="请填写参评对象描述"></textarea>
+					</view>
+					
 				</view>
 				<view class="cu-bar bg-white justify-end">
 					<view class="action">
 						<button class="cu-btn line-blue text-blue" @tap="hideModal">取消</button>
 						<button class="cu-btn bg-blue margin-left" @tap="saveCpdx">确定</button>
-
 					</view>
 				</view>
 			</view>
@@ -93,12 +91,8 @@
 		<view>
 			<view class="cu-card shadow" v-for="(option, index) in newOptions" :key="index" style="border: 1px solid #ededed;border-radius: 20upx;margin: 10upx 20upx;padding: 10upx 10upx 20upx;">
 				<view class="cu-form-group">
-					<view class="title">项目名称</view>
+					<view class="title">评分内容</view>
 					<input v-model="option.xmmc" placeholder="请填写投票主题"></input>
-				</view>
-				<view class="cu-form-group">
-					<view class="title">项目权重</view>
-					<input v-model="option.xmqz" class="uni-input" type="number" placeholder="输入项目权重,如0.4" />
 				</view>
 				<view class="cu-form-group">
 					<view class="title">最低分设置</view>
@@ -130,6 +124,7 @@
 				newOptions: [],
 				modalShow: false,
 				cpdx: '',
+				cpdxms:'',
 				modalTitle: '新增参评对象',
 				cpdxs: [],
 			};

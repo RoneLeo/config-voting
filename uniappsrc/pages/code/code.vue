@@ -1,5 +1,6 @@
 <template>
 	<view class="page">
+		<login></login>
 		<cu-custom v-show="isBack" bgColor="bg-blue" :isBack="isBack">
 			<block slot="content" style="width: calc(100% - 100px);">科研组专家打分活动</block>
 		</cu-custom>

@@ -1,11 +1,12 @@
 <template>
 	<view class="page">
+		<login></login>
 		<cu-custom v-show="isBack" bgColor="bg-blue" :isBack="isBack">
 			<block slot="content" style="width: calc(100% - 100px);">2019九室爱岗敬业选举</block>
 		</cu-custom>
 
 		<view class="vote-wrapper padding">
-			<view class="vote-tt" style="font-size: 18px;text-align: center;line-height: 3;border-bottom: 1px solid #eee;">
+			<view class="vote-tt title" style="font-size: 18px;">
 				2019九室爱岗敬业选举
 			</view>
 			<view class="vote-tt" style="margin-top: 40upx;">
@@ -47,9 +48,9 @@
 							</view>
 
 							<view class="item-td padding-sm">
-								<checkbox-group @change="checkboxChange">
+								<checkbox-group ref="checkbox1" @change="checkboxChange(1)">
 									<label v-for="(item, index) in 5" :key="item">
-										<checkbox :value="''+item" :checked="index == 2" />
+										<checkbox :value="''+item" />
 										<view class="label-text">多选项{{item}}多选项{{item}}</view>
 									</label>
 								</checkbox-group>
@@ -64,25 +65,31 @@
 								你认为下面谁最应该获得最佳奖项？
 							</view>
 							<view class="item-td padding-sm">
-								<checkbox-group>
-									<label v-for="(item, index) in 4" :key="item">
-										<checkbox :value="''+item" :checked="index == 2" />
-										<view class="label-text">不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}不定项{{item}}</view>
+								<checkbox-group ref="checkbox2" @change="checkboxChange(2)">
+									<label v-for="(item, index) in checkboxItems" :key="item.value">
+										<view>
+											<checkbox :value="item.value" />
+										</view>
+										<view class="label-text">{{item.name}}</view>
 									</label>
 								</checkbox-group>
 							</view>
 						</view>
 					</view>
-					
+
 				</scroll-view>
 				<view class="pages padding justify-center">
 					<button class="cu-btn bg-blue" @tap="lastOne">上一题</button>
 					<text style="width: 100upx;text-align: center;display: inline-block;align-self: center;">{{current}} / 3</text>
 					<button class="cu-btn bg-blue" @tap="nextOne">下一题</button>
 				</view>
+
 			</view>
-			
-			
+
+			<view>
+				<!-- <el-checkbox :options="printer.operate" v-model="printer.selected" max="2" @change="select" style="margin-top:-10px;"></el-checkbox> -->
+			</view>
+
 			<!-- <view class="vote-tt" style="display: flex;justify-content: flex-start;">
 				<view>投票注解：</view>
 				<view class="vote-subtt">
@@ -106,7 +113,43 @@
 		data() {
 			return {
 				isBack: false,
-				current: 1
+				current: 1,
+				slider: null,
+				selected: false,
+				checked: true,
+				printer: {
+					name: '',
+					operate: [{
+							label: '下单打印',
+							id: 1,
+						},
+						{
+							label: '付款打印',
+							id: 2
+						},
+						{
+							label: '确认收货打印',
+							id: 3
+						}
+					],
+					selected: [1, 3]
+				},
+				checkboxItems: [{
+						value: 'USA',
+						name: '美国',
+						checked: true
+					},
+					{
+						value: 'USA1',
+						name: '美国1',
+						checked: false
+					},
+					{
+						value: 'USA2',
+						name: '美国2',
+						checked: false
+					}
+				]
 			};
 		},
 		mounted() {
@@ -126,16 +169,39 @@
 			}
 		},
 		methods: {
-			checkboxChange(e) {
-				console.log(e)
+			select(data) {
+				console.log(data);
 			},
+			checkOptionChange(e) {
+				console.log('checkOptionChange', e);
+			},
+
+			radioChange(e) {
+				console.log('radioChange', e)
+			},
+			checkboxChange(index) {
+				let ref = 'checkbox' + index;
+				let checkboxs = this.$refs[ref].checkboxList.length && this.$refs[ref].checkboxList;
+				checkboxs.forEach((item, index) => {
+					// this.checkboxItems[index].checked = item.checkboxChecked;
+					if (item.checkboxChecked) {
+						console.log(item.checkboxValue)
+					}
+				})
+				console.log(this.checkboxItems)
+			},
+
 			lastOne() {
-				this.current--;
+				if (this.current > 1) {
+					this.current--;
+				}
 				// 				var num = this.currentItem.replace(/[^0-9]/ig, "");
 				// 				this.currentItem = 'item' + (parseInt(num) - 1)
 			},
 			nextOne() {
-				this.current++;
+				if (this.current < 3) {
+					this.current++;
+				}
 				// 				var num = this.currentItem.replace(/[^0-9]/ig, "");
 				// 
 				// 				this.currentItem = 'item' + (parseInt(num) + 1)

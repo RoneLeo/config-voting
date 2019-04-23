@@ -1,5 +1,6 @@
 <template>
 	<view class="page">
+		<login></login>
 		<cu-custom bgColor="bg-blue" :isBack="true">
 			<block slot="content">发起投票活动</block>
 		</cu-custom>

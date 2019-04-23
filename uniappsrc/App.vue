@@ -2,6 +2,7 @@
 	import Vue from 'vue'
 	export default {
 		onLaunch: function() {
+			uni.clearStorage();
 			uni.getSystemInfo({
 				success: function(e) {
 					// #ifndef MP
@@ -27,6 +28,8 @@
 			})
 		},
 		onShow: function() {
+			console.log('App Show', this.getGlobalUser())
+			
 			// console.log('App Show')
 		},
 		onHide: function() {
@@ -39,7 +42,9 @@
 	/*每个页面公共css */
 	@import "colorui/main.css";
 	@import "colorui/icon.css";
-
+	uni-checkbox .uni-checkbox-input.uni-checkbox-input-checked {
+		background-color: #007aff;
+	}
 	input[type='file'] {
 		background: none;
 		outline: none;
@@ -65,5 +70,11 @@
 	.line {
 		height: 1px;
 		background-color: #DBDBDA;
+	}
+	.title {
+		text-align: center;line-height: 3;border-bottom: 1px solid #eee;
+	}
+	.font18 {
+		font-size: 18px;
 	}
 </style>

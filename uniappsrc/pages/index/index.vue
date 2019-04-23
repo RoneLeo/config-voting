@@ -1,5 +1,6 @@
 <template>
 	<view class="page">
+		<login></login>
 		<view v-show="addBtnShow" class="opt-btn shadow-blur bg-blue" @tap="addBtnShowChange" style="">
 			+
 		</view>
@@ -123,11 +124,10 @@
 			return {
 				title: 'Hello',
 				modalName: null,
-				addBtnShow: true
+				addBtnShow: true,
 			}
 		},
 		onLoad() {
-
 		},
 		methods: {
 			gotoVote() {

@@ -19,20 +19,17 @@ public class MustLoginInterceptor extends HandlerInterceptorAdapter {
         }
         Method method = handlerMethod.getMethod();
         MustLogin annotation = method.getAnnotation(MustLogin.class);
-        Object entity = SessionHelper.getuser();
         if (annotation != null) {
+            Integer uid = SessionHelper.getuid();
+            Integer role = SessionHelper.getrole();
             int[] needs = annotation.rolerequired();
-            if (entity == null) {
+            if (uid == null || uid == 0) {
                 MessageUtils.resultMsg(response, ApiResult.UNKNOWN());
                 return false;
             }
-//            if (entity.getJs() != 1 && entity.getDlsx() != null && entity.getDlsx().before(new Date())) {
-//                MessageUtils.resultMsg(response, ApiResult.TimeDown());
-//                return false;
-//            }
             for (int need : needs) {
                 //todo 权限判断
-                if (need == 0 || (1 == need)) {
+                if (need == 0 || (role == need)) {
                     return true;
                 }
             }

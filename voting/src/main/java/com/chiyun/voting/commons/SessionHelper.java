@@ -6,12 +6,19 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class SessionHelper {
     public static HttpServletRequest getRequest() {
         RequestAttributes ra = RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) ra).getRequest();
         return request;
+    }
+
+    public static HttpServletResponse getResponse() {
+        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+        HttpServletResponse response = ((ServletRequestAttributes) ra).getResponse();
+        return response;
     }
 
 

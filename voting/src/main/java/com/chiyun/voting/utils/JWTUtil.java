@@ -14,8 +14,8 @@ import java.util.Map;
 public class JWTUtil {
 
 
-    // 过期时间15分钟
-    private static final long EXPIRE_TIME = 15 * 60 * 1000;
+    // 过期时间40分钟
+    private static final long EXPIRE_TIME = 40 * 60 * 1000;
     //    私钥
     private static final String TOKRN_SECRET = "265B23D023B735BBE05000017F0029F7";
 

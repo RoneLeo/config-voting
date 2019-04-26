@@ -122,4 +122,26 @@ public class ThemeServiceImpl {
     public int updateFbzt(int id, int fbzt) {
         return themeRepository.updateFbzt(id, fbzt);
     }
+
+    public ApiResult isfbvote(int hdid) {
+        ThemeEntity themeEntity = findById(hdid);
+        if (themeEntity == null) {
+            return ApiResult.FAILURE("不存在的活动");
+        }
+        if (themeEntity.getSffb() != 0) {
+            return ApiResult.FAILURE("已发布的投票活动不能修改");
+        }
+        return ApiResult.SUCCESS();
+    }
+
+    public ApiResult isfbscore(int hdid) {
+        ThemeEntity themeEntity = findById(hdid);
+        if (themeEntity == null) {
+            return ApiResult.FAILURE("不存在的活动");
+        }
+        if (themeEntity.getSffb() != 0) {
+            return ApiResult.FAILURE("已发布的打分活动不能修改");
+        }
+        return ApiResult.SUCCESS();
+    }
 }

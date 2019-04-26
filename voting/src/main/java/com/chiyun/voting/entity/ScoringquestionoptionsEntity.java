@@ -18,6 +18,10 @@ public class ScoringquestionoptionsEntity {
     private int zdf;
     @ApiModelProperty("最高分")
     private int zgf;
+    @ApiModelProperty(value = "打分项", required = true)
+    private String mc;
+    @ApiModelProperty("打分项描述")
+    private String mcms;
 
     @Id
     @Column(name = "id")
@@ -58,6 +62,26 @@ public class ScoringquestionoptionsEntity {
 
     public void setZgf(int zgf) {
         this.zgf = zgf;
+    }
+
+    @Basic
+    @Column(name = "scorename")
+    public String getMc() {
+        return mc;
+    }
+
+    public void setMc(String mc) {
+        this.mc = mc;
+    }
+
+    @Basic
+    @Column(name = "scoredesc")
+    public String getMcms() {
+        return mcms;
+    }
+
+    public void setMcms(String mcms) {
+        this.mcms = mcms;
     }
 
     @Override

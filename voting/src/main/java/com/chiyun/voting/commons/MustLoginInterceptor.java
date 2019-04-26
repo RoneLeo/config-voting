@@ -26,7 +26,7 @@ public class MustLoginInterceptor extends HandlerInterceptorAdapter {
                 MessageUtils.resultMsg(response, ApiResult.UNKNOWN());
                 return false;
             }
-            if (StringUtils.datecompare(JWTUtil.getdate(SessionHelper.getToken()), 5)) {
+            if (StringUtils.datecompare(JWTUtil.getdate(SessionHelper.getToken()), 20)) {
                 response.setHeader("accessToken", SessionHelper.getNewToken());
             }
             Integer uid = SessionHelper.getuid();
@@ -51,5 +51,6 @@ public class MustLoginInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         response.setHeader("accessToken", SessionHelper.getToken());
+        super.afterCompletion(request, response, handler, ex);
     }
 }

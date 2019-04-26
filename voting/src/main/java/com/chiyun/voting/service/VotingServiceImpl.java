@@ -1,5 +1,6 @@
 package com.chiyun.voting.service;
 
+import com.chiyun.voting.entity.ThemeEntity;
 import com.chiyun.voting.entity.VotingquestionEntity;
 import com.chiyun.voting.entity.VotingquestionoptionsEntity;
 import com.chiyun.voting.repository.VotingQORepository;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VotingServiceImpl {
@@ -59,6 +61,11 @@ public class VotingServiceImpl {
 
     public boolean existById(int id) {
         return votingquestionRepository.existsById(id);
+    }
+
+    public VotingquestionEntity findById(int id) {
+        Optional<VotingquestionEntity> optional = votingquestionRepository.findById(id);
+        return optional.orElse(null);
     }
 
     public int deleteById(int id) {

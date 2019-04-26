@@ -104,7 +104,7 @@ public class VotingController {
         return ApiResult.SUCCESS();
     }
 
-    @PostMapping("/updateOneOption")
+    @PostMapping("/deleteOneOption")
     @ApiOperation("修改一个投票选项")
     @MustLogin(rolerequired = 1)
     public ApiResult deleteOneOption(int id) {

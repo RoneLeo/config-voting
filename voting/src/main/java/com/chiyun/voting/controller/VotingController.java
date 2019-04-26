@@ -1,7 +1,9 @@
 package com.chiyun.voting.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.chiyun.voting.commons.ApiResult;
 import com.chiyun.voting.commons.MustLogin;
+import com.chiyun.voting.entity.ThemeEntity;
 import com.chiyun.voting.entity.VotingquestionEntity;
 import com.chiyun.voting.entity.VotingquestionoptionsEntity;
 import com.chiyun.voting.service.ThemeServiceImpl;
@@ -26,15 +28,20 @@ public class VotingController {
     private VotingServiceImpl votingService;
 
     @PostMapping("/addOneVoting")
-    @ApiOperation("添加一个投票对象")
+    @ApiOperation("添加一个投票题目")
     @MustLogin(rolerequired = 1)
-    public ApiResult addOne(VotingquestionEntity votingquestionEntity, @RequestBody List<VotingquestionoptionsEntity> list, @RequestParam @ApiParam("是否添加其他") boolean qt) {
-        if (!themeService.existById(votingquestionEntity.getHdid()))
+    public ApiResult addOne(VotingquestionEntity votingquestionEntity, String list, @RequestParam @ApiParam("是否添加其他") boolean qt) {
+        ThemeEntity themeEntity = themeService.findById(votingquestionEntity.getHdid());
+        if (themeEntity == null)
             return ApiResult.FAILURE("不存在的活动");
+        if (themeEntity.getSffb() != 0) {
+            return ApiResult.FAILURE("已发布的投票活动不能再增加投票项目");
+        }
         votingquestionEntity.setId(0);
         boolean boo;
         try {
-            boo = votingService.saveVoting(votingquestionEntity, list, qt);
+            List<VotingquestionoptionsEntity> lisdata = JSON.parseArray(list, VotingquestionoptionsEntity.class);
+            boo = votingService.saveVoting(votingquestionEntity, lisdata, qt);
         } catch (Exception e) {
             e.printStackTrace();
             return ApiResult.SUCCESS();
@@ -45,10 +52,10 @@ public class VotingController {
     }
 
     @PostMapping("/updateOne")
-    @ApiOperation("修改一个投票对象")
+    @ApiOperation("修改一个投票题目")
     @MustLogin(rolerequired = 1)
     public ApiResult updateOne(VotingquestionEntity votingquestionEntity) {
-        if (!votingService.existById(votingquestionEntity.getHdid()))
+        if (!votingService.existById(votingquestionEntity.getId()))
             return ApiResult.FAILURE("不存在的投票");
         try {
             votingService.save(votingquestionEntity);
@@ -77,4 +84,31 @@ public class VotingController {
         }
     }
 
+    @PostMapping("/addOneOption")
+    @ApiOperation("新增一个投票选项")
+    @MustLogin(rolerequired = 1)
+    public ApiResult addOneOption(VotingquestionoptionsEntity votingquestionoptionsEntity) {
+        if (!votingService.existById(votingquestionoptionsEntity.getDxid()))
+            return ApiResult.FAILURE("不存在的投票");
+        votingService.saveVQO(votingquestionoptionsEntity);
+        return ApiResult.SUCCESS();
+    }
+
+    @PostMapping("/updateOneOption")
+    @ApiOperation("修改一个投票选项")
+    @MustLogin(rolerequired = 1)
+    public ApiResult updateOneOption(VotingquestionoptionsEntity votingquestionoptionsEntity) {
+        if (!votingService.existById(votingquestionoptionsEntity.getDxid()))
+            return ApiResult.FAILURE("不存在的投票");
+        votingService.saveVQO(votingquestionoptionsEntity);
+        return ApiResult.SUCCESS();
+    }
+
+    @PostMapping("/updateOneOption")
+    @ApiOperation("修改一个投票选项")
+    @MustLogin(rolerequired = 1)
+    public ApiResult deleteOneOption(int id) {
+        votingService.deleteVQO(id);
+        return ApiResult.SUCCESS();
+    }
 }

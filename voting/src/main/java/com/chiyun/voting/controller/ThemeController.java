@@ -65,9 +65,18 @@ public class ThemeController {
         return ApiResult.SUCCESS(map);
     }
 
-    @PostMapping("/publishOne")
-    @ApiOperation("发布一个活动")
-    public ApiResult publishOne(int id, int fbzt) {
-        return ApiResult.SUCCESS();
+    @PostMapping("/updateFbzt")
+    @ApiOperation("修改活动状态：0-未发布，1-已发布，2-已结束")
+    public ApiResult updateFbzt(@RequestParam @ApiParam(value = "活动id", required = true) int id,
+                                @RequestParam @ApiParam(value = "状态", required = true) int fbzt) {
+        ThemeEntity themeEntity = themeService.findById(id);
+        if (themeEntity == null)
+            return ApiResult.FAILURE("不存在的活动");
+        if (themeEntity.getSffb() == fbzt)
+            return ApiResult.SUCCESS();
+        int sum = themeService.updateFbzt(id, fbzt);
+        if (sum > 0)
+            return ApiResult.SUCCESS();
+        return ApiResult.FAILURE();
     }
 }

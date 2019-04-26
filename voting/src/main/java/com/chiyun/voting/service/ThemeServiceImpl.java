@@ -118,4 +118,8 @@ public class ThemeServiceImpl {
         });
         return forumList;
     }
+
+    public int updateFbzt(int id, int fbzt) {
+        return themeRepository.updateFbzt(id, fbzt);
+    }
 }

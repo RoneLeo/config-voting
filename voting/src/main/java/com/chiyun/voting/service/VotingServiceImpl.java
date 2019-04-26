@@ -1,9 +1,8 @@
 package com.chiyun.voting.service;
 
-import com.chiyun.voting.commons.ApiResult;
-import com.chiyun.voting.entity.ThemeEntity;
 import com.chiyun.voting.entity.VotingquestionEntity;
 import com.chiyun.voting.entity.VotingquestionoptionsEntity;
+import com.chiyun.voting.repository.VotingQORepository;
 import com.chiyun.voting.repository.VotingquestionRepository;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,10 +17,12 @@ import java.util.List;
 @Service
 public class VotingServiceImpl {
     private final VotingquestionRepository votingquestionRepository;
+    private final VotingQORepository votingQORepository;
     private final JdbcTemplate jdbcTemplate;
 
-    public VotingServiceImpl(VotingquestionRepository votingquestionRepository, JdbcTemplate jdbcTemplate) {
+    public VotingServiceImpl(VotingquestionRepository votingquestionRepository, VotingQORepository votingQORepository, JdbcTemplate jdbcTemplate) {
         this.votingquestionRepository = votingquestionRepository;
+        this.votingQORepository = votingQORepository;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -72,4 +73,13 @@ public class VotingServiceImpl {
     public List<VotingquestionEntity> findAllByHdid(int hdid) {
         return votingquestionRepository.findAllByHdid(hdid);
     }
+
+    public VotingquestionoptionsEntity saveVQO(VotingquestionoptionsEntity entity) {
+        return votingQORepository.save(entity);
+    }
+
+    public int deleteVQO(int id) {
+        return votingQORepository.deleteAllById(id);
+    }
+
 }

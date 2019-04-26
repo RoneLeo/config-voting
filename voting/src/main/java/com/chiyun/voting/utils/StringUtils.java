@@ -114,4 +114,18 @@ public class StringUtils {
         cal.set(Calendar.SECOND, 59);
         return cal.getTime();
     }
+
+    /**
+     * 比较所给时间与当前时间差是否小于给定分钟数
+     *
+     * @param date
+     * @param minute
+     * @return
+     */
+    public static boolean datecompare(Date date, int minute) {
+        if (date == null)
+            return false;
+        int dev = (int) ((date.getTime() - System.currentTimeMillis()) / (60 * 1000));
+        return dev < minute && dev > 0;
+    }
 }

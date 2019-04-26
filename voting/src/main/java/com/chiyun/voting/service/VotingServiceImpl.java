@@ -1,5 +1,7 @@
 package com.chiyun.voting.service;
 
+import com.chiyun.voting.commons.ApiResult;
+import com.chiyun.voting.entity.ThemeEntity;
 import com.chiyun.voting.entity.VotingquestionEntity;
 import com.chiyun.voting.entity.VotingquestionoptionsEntity;
 import com.chiyun.voting.repository.VotingquestionRepository;
@@ -25,7 +27,7 @@ public class VotingServiceImpl {
 
     @Transactional
     public boolean saveVoting(VotingquestionEntity votingquestionEntity, @RequestBody List<VotingquestionoptionsEntity> list, boolean qt) {
-        VotingquestionEntity entity = votingquestionRepository.save(votingquestionEntity);
+        VotingquestionEntity entity = save(votingquestionEntity);
         if (entity == null) {
             return false;
         }
@@ -52,5 +54,22 @@ public class VotingServiceImpl {
             }
         });
         return true;
+    }
+
+    public boolean existById(int id) {
+        return votingquestionRepository.existsById(id);
+    }
+
+    public int deleteById(int id) {
+        return votingquestionRepository.deleteAllById(id);
+    }
+
+    public VotingquestionEntity save(VotingquestionEntity votingquestionEntity) {
+
+        return votingquestionRepository.save(votingquestionEntity);
+    }
+
+    public List<VotingquestionEntity> findAllByHdid(int hdid) {
+        return votingquestionRepository.findAllByHdid(hdid);
     }
 }

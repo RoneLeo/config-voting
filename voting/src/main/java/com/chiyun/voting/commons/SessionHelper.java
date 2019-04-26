@@ -14,8 +14,15 @@ public class SessionHelper {
         return request;
     }
 
+
     public static String getToken() {
-        return getRequest().getHeader("accessToken");
+        String token = getRequest().getHeader("accessToken");
+        return token;
+    }
+
+    public static String getNewToken() {
+        String token = JWTUtil.sign(getuname(), getuid(), getrole());
+        return token;
     }
 
     public static String getuname() {

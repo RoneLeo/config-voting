@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -101,5 +102,18 @@ public class VotingquestionEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, tplx, bt, hdid, zxs, zds);
+    }
+
+//    @Transient
+    List<VotingquestionoptionsEntity> volist;
+
+    @OneToMany
+    @JoinColumn(name = "qid")
+    public List<VotingquestionoptionsEntity> getVolist() {
+        return volist;
+    }
+
+    public void setVolist(List<VotingquestionoptionsEntity> volist) {
+        this.volist = volist;
     }
 }

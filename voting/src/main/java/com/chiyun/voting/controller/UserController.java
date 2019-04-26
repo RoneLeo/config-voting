@@ -2,6 +2,7 @@ package com.chiyun.voting.controller;
 
 import com.chiyun.voting.commons.ApiResult;
 import com.chiyun.voting.commons.MustLogin;
+import com.chiyun.voting.commons.SessionHelper;
 import com.chiyun.voting.entity.UserEntity;
 import com.chiyun.voting.service.UserServiceImpl;
 import com.chiyun.voting.utils.JWTUtil;
@@ -43,12 +44,13 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    @ApiOperation("用户登录")
+    @ApiOperation("用户添加")
     @MustLogin(rolerequired = 1)
     public ApiResult add(@RequestParam @ApiParam(value = "登录账号", required = true) String zh,
                          @RequestParam @ApiParam(value = "登录密码", required = true) String mm,
                          @RequestParam @ApiParam(value = "用户角色", required = true) int js,
-                         @RequestParam(required = false) @ApiParam(value = "用户姓名") String mc) {
+                         @RequestParam(required = false) @ApiParam(value = "用户姓名") String mc,
+                         @RequestParam(required = false) @ApiParam(value = "备注") String bz) {
         if (userService.existsByZh(zh))
             return ApiResult.FAILURE("已存在该账号用户");
         UserEntity userEntity = new UserEntity();
@@ -62,6 +64,7 @@ public class UserController {
         userEntity.setZh(zh);
         userEntity.setMc(mc);
         userEntity.setJs(js);
+        userEntity.setBz(bz);
         try {
             userService.save(userEntity);
             return ApiResult.SUCCESS(userEntity);

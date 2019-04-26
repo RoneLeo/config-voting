@@ -2,6 +2,7 @@ package com.chiyun.voting.controller;
 
 import com.chiyun.voting.commons.ApiResult;
 import com.chiyun.voting.commons.MustLogin;
+import com.chiyun.voting.commons.SessionHelper;
 import com.chiyun.voting.entity.ThemeEntity;
 import com.chiyun.voting.service.ThemeServiceImpl;
 import io.swagger.annotations.Api;
@@ -10,6 +11,10 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Api("活动管理")
 @RestController
@@ -28,10 +33,41 @@ public class ThemeController {
     @PostMapping("/delete")
     @ApiOperation("活动删除")
     @MustLogin(rolerequired = 1)
-    public ApiResult delete(@RequestParam @ApiParam(value = "活动id", required = true) int hdid) {
+    public ApiResult<Object> delete(@RequestParam @ApiParam(value = "活动id", required = true) int hdid) {
         int sum = themeService.deleteById(hdid);
         if (sum == 1)
             return ApiResult.SUCCESS();
         return ApiResult.FAILURE();
+    }
+
+    @PostMapping("/findAllInfoById")
+    @ApiOperation("根据活动id查询所有信息")
+    public ApiResult<ThemeEntity> findAllInfoById(@RequestParam @ApiParam(value = "活动id", required = true) int id) {
+        ThemeEntity entity = themeService.findAllInfoById(id);
+        return ApiResult.SUCCESS(entity);
+    }
+
+    @PostMapping("/findAll")
+    @ApiOperation("查询所有活动")
+    @MustLogin
+    public ApiResult findAllByFbzt() {
+        Map<String, List<ThemeEntity>> map = new HashMap<>();
+
+        List<ThemeEntity> list1 = themeService.findAllByFbzt(1);
+        List<ThemeEntity> list2 = themeService.findAllByFbzt(2);
+
+        map.put("yfb", list1);
+        map.put("ywc", list2);
+        if (SessionHelper.getrole() == null || SessionHelper.getrole() != 0) {
+            List<ThemeEntity> list0 = themeService.findAllByFbzt(0);
+            map.put("wfb", list0);
+        }
+        return ApiResult.SUCCESS(map);
+    }
+
+    @PostMapping("/publishOne")
+    @ApiOperation("发布一个活动")
+    public ApiResult publishOne(int id, int fbzt) {
+        return ApiResult.SUCCESS();
     }
 }

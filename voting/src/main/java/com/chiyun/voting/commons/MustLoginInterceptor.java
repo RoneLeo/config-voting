@@ -1,6 +1,8 @@
 package com.chiyun.voting.commons;
 
+import com.chiyun.voting.utils.JWTUtil;
 import com.chiyun.voting.utils.MessageUtils;
+import com.chiyun.voting.utils.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -20,6 +22,13 @@ public class MustLoginInterceptor extends HandlerInterceptorAdapter {
         Method method = handlerMethod.getMethod();
         MustLogin annotation = method.getAnnotation(MustLogin.class);
         if (annotation != null) {
+            if (!JWTUtil.verify(SessionHelper.getToken())) {
+                MessageUtils.resultMsg(response, ApiResult.UNKNOWN());
+                return false;
+            }
+            if (StringUtils.datecompare(JWTUtil.getdate(SessionHelper.getToken()), 5)) {
+                response.setHeader("accessToken", SessionHelper.getNewToken());
+            }
             Integer uid = SessionHelper.getuid();
             Integer role = SessionHelper.getrole();
             int[] needs = annotation.rolerequired();
@@ -39,4 +48,8 @@ public class MustLoginInterceptor extends HandlerInterceptorAdapter {
         return true;
     }
 
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        response.setHeader("accessToken", SessionHelper.getToken());
+    }
 }

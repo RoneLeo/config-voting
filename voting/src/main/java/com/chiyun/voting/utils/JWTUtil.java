@@ -30,7 +30,7 @@ public class JWTUtil {
             Algorithm algorithm = Algorithm.HMAC256(TOKRN_SECRET);
             JWTVerifier verifier = JWT.require(algorithm)
                     .build();
-            DecodedJWT jwt = verifier.verify(token);
+            verifier.verify(token);
             return true;
         } catch (Exception exception) {
             return false;
@@ -97,6 +97,15 @@ public class JWTUtil {
         try {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim("role").asInt();
+        } catch (JWTDecodeException e) {
+            return null;
+        }
+    }
+
+    public static Date getdate(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getExpiresAt();
         } catch (JWTDecodeException e) {
             return null;
         }

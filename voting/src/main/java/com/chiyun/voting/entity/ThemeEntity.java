@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -12,13 +13,13 @@ import java.util.Objects;
 @Table(name = "theme", schema = "tpdf", catalog = "")
 public class ThemeEntity {
     private int id;
-    @ApiModelProperty(value = "活动标题",required = true)
+    @ApiModelProperty(value = "活动标题", required = true)
     private String bt;
     @ApiModelProperty("活动内容")
     private String nr;
-    @ApiModelProperty(value = "活动类型：0 投票， 1 打分",required = true)
+    @ApiModelProperty(value = "活动类型：0 投票， 1 打分", required = true)
     private int hdlx;
-    @ApiModelProperty(value = "是否发布（0：未发布，1：已发布，2：投票结束）",required = true)
+    @ApiModelProperty(value = "是否发布（0：未发布，1：已发布，2：投票结束）", required = true)
     private int sffb;
     @ApiModelProperty("开始时间")
     private Date kssj;
@@ -121,6 +122,37 @@ public class ThemeEntity {
                 Objects.equals(nr, that.nr) &&
                 Objects.equals(kssj, that.kssj) &&
                 Objects.equals(jssj, that.jssj);
+    }
+
+    List<VotingquestionEntity> votelist;
+    List<ScoringquestionEntity> scorelist;
+    List<ScoringquestionoptionsEntity> scoreoblist;
+
+    @Transient
+    public List<VotingquestionEntity> getVotelist() {
+        return votelist;
+    }
+
+    public void setVotelist(List<VotingquestionEntity> votelist) {
+        this.votelist = votelist;
+    }
+
+    @Transient
+    public List<ScoringquestionEntity> getScorelist() {
+        return scorelist;
+    }
+
+    public void setScorelist(List<ScoringquestionEntity> scorelist) {
+        this.scorelist = scorelist;
+    }
+
+    @Transient
+    public List<ScoringquestionoptionsEntity> getScoreoblist() {
+        return scoreoblist;
+    }
+
+    public void setScoreoblist(List<ScoringquestionoptionsEntity> scoreoblist) {
+        this.scoreoblist = scoreoblist;
     }
 
     @Override

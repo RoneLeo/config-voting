@@ -15,6 +15,9 @@ public interface ScoringQRepository extends JpaRepository<ScoringquestionEntity,
 
     List<ScoringquestionEntity> findAllByHdid(int hdid);
 
+    @Query(value = "select count(*) from scoringquestion,scoring where id = ?1 and qid = id and pid = ?2", nativeQuery = true)
+    int existsBypidAndHdid(int dxid, int pid);
+
     @Modifying
     @Transactional
     int deleteAllById(int id);

@@ -108,4 +108,12 @@ public class VotingServiceImpl {
             }
         });
     }
+
+    public int hasVote(int hdid, int uid) {
+        return votingquestionRepository.existsBypidAndHdid(hdid, uid);
+    }
+
+    public List<VotingEntity> findQtByQid(int qid) {
+        return votingRepository.findAllByQidAndBzIsNotNull(qid);
+    }
 }

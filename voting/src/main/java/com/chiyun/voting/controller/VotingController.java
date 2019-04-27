@@ -3,6 +3,7 @@ package com.chiyun.voting.controller;
 import com.alibaba.fastjson.JSON;
 import com.chiyun.voting.commons.ApiResult;
 import com.chiyun.voting.commons.MustLogin;
+import com.chiyun.voting.commons.SessionHelper;
 import com.chiyun.voting.entity.ThemeEntity;
 import com.chiyun.voting.entity.VotingEntity;
 import com.chiyun.voting.entity.VotingquestionEntity;
@@ -146,6 +147,8 @@ public class VotingController {
             themeService.save(themeEntity);
             return ApiResult.FAILURE("投票活动已结束");
         }
+        if (votingService.hasVote(themeEntity.getId(), SessionHelper.getuid()) > 0)
+            return ApiResult.FAILURE("已参与过投票");
         try {
             votingService.vote(list);
             return ApiResult.SUCCESS();
@@ -155,4 +158,17 @@ public class VotingController {
         }
     }
 
+    @PostMapping("/findAllQtByQid")
+    @ApiOperation("查询一个题目中的其他")
+    @MustLogin
+    public ApiResult findAllQtByQid(@RequestParam @ApiParam(value = "投票题目id", required = true) int id) {
+        return ApiResult.SUCCESS(votingService.findQtByQid(id));
+    }
+
+    @PostMapping("/findAllQtByQid")
+    @ApiOperation("查询一个题目中的其他")
+    @MustLogin
+    public ApiResult getResult(@RequestParam @ApiParam(value = "投票题目id", required = true) int id) {
+        return ApiResult.SUCCESS(votingService.findQtByQid(id));
+    }
 }

@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface VotingRepository extends JpaRepository<VotingEntity, VotingEntityPK> {
-    List<VotingEntity> findAllByOidAndBzIsNotNull(int oid);
+
+    List<VotingEntity> findAllByQidAndBzIsNotNull(int qid);
 }

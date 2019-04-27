@@ -31,7 +31,7 @@ http.delete('user/1').then((res)=>{
 */
 export default {
 	config: {
-		baseUrl: "https://unidemo.dcloud.net.cn/",
+		baseUrl: "http://182.151.22.247:8899",
 		header: {
 			'Content-Type':'application/json;charset=UTF-8',
 			'Content-Type':'application/x-www-form-urlencoded'
@@ -70,6 +70,7 @@ export default {
 			let _config = null
 			
 			options.complete = (response) => {
+				// console.log('response', response)
 				let statusCode = response.statusCode
 				response.config = _config
 				if (process.env.NODE_ENV === 'development') {

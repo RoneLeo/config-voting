@@ -3,13 +3,13 @@
 		<view class="login_form">
 			<view class="login_form_item">
 				<text class="form_item_tt">用户名</text>
-				<input placeholder="请填写用户名" name="input"></input>
+				<input v-model="zh" placeholder="请填写用户名" name="input"></input>
 			</view>
 			<view class="login_form_item">
 				<text class="form_item_tt">
 					密码
 				</text>
-				<input placeholder="请填写密码" name="input"></input>
+				<input v-model="mm" placeholder="请填写密码" name="input"></input>
 			</view>
 			<view class="login_form_item">
 				<button class="login_btn" type="primary" @tap="login">登 录</button>
@@ -24,20 +24,39 @@
 		data() {
 			return {
 				loginFormShow: false,
+				zh: '',
+				mm: ''
 			}
 		},
 		created() {
-			console.log(this.getGlobalUser(), !this.getGlobalUser())
 			if (!this.getGlobalUser()) {
 				this.loginFormShow = true;
 			}
 		},
 		methods: {
 			login() {
-				uni.setStorageSync("user", {
-					name: '111'
+				uni.request({
+					url: 'http://182.151.22.247:8899/user/login', //仅为示例，并非真实接口地址。
+					data: {
+						'zh': this.zh,
+						'mm': this.mm
+					},
+					header: {
+						'content-type': 'application/x-www-form-urlencoded'
+					},
+					success: (res) => {
+						console.log(res)
+						// console.log(res.data);
+						let data = res.data.data;
+						this.$store.commit('setLogin', true)
+						uni.setStorageSync("userInfo", JSON.parse(JSON.stringify(data.user)));
+						uni.setStorageSync("token", JSON.parse(JSON.stringify(data.accessToken)));
+						setTimeout(() => {
+							this.loginFormShow = false;
+						}, 500)
+					}
 				});
-				this.loginFormShow = false;
+
 			}
 		}
 	}

@@ -46,7 +46,8 @@ const autoLogin = () => {
 }
 
 const getGlobalUser = function(key) {
-	var userInfo = uni.getStorageSync("globalUser");
+	var userInfo = uni.getStorageSync("userInfo");
+	console.log('userInfo', userInfo)
 	if (userInfo != null && userInfo != "" && userInfo != undefined) {
 		return userInfo;
 	} else {
@@ -54,10 +55,11 @@ const getGlobalUser = function(key) {
 	}
 }
 
-const getSessionId = function(key) {
-	var sessionId = uni.getStorageSync("sessionId");
-	if (sessionId != null && sessionId != "" && sessionId != undefined) {
-		return sessionId;
+const getToken = function(key) {
+	var token = uni.getStorageSync("token");
+	console.log('token', token);
+	if (token != null && token != "" && token != undefined) {
+		return token;
 	} else {
 		return null;
 	}
@@ -66,44 +68,48 @@ const getSessionId = function(key) {
 
 // 单独导出(测试接口) import {test} from '@/common/vmeitime-http/'
 export const post = (url, data) => {
-	http.config.baseUrl = "http://www.chiy.online:8083"
+	http.config.baseUrl = "http://182.151.22.247:8899"
 	//设置请求前拦截器
 	http.interceptor.request = (config) => {
-		if (url.indexOf("Login") != -1) { //如果是登录接口
+		if (url.indexOf("login") != -1) { //如果是登录接口
 			config.header = {
 				'content-type': 'application/x-www-form-urlencoded'
 			}
-		} else {
-			if (getGlobalUser() == null || getSessionId() == null) { //如果缓存没有的话,就要登录
-				autoLogin();
-				return;
+		} else if(url.indexOf("score/addScoreDx") != -1 || url.indexOf("score/addScoreOP") != -1){
+			config.header = {
+				// 'content-type': 'application/x-www-form-urlencoded',
+				'content-type': 'application/json',
+				'accessToken': uni.getStorageSync("token")
 			}
+		}else {
 			config.header = {
 				'content-type': 'application/x-www-form-urlencoded',
-				'cookie': 'JSESSIONID=' + uni.getStorageSync("sessionId")
+				'accessToken': uni.getStorageSync("token")
 			}
 		}
 	}
 	//设置请求结束后拦截器
 	http.interceptor.response = (response) => {
+		// console.log(response)
 		if (response.statusCode === 200) {
 			let data = JSON.parse(response.data)
-			if (data.resCode === 100 || data.resCode === 101) { //未登录或登录失败
-				uni.showToast({
-					title: '自动登录中',
-					icon: "none"
-				})
-				autoLogin();
-			} else {
-				return data;
-			}
+// 			if (data.resCode === 100 || data.resCode === 101) { //未登录或登录失败
+// 				uni.showToast({
+// 					title: '自动登录中',
+// 					icon: "none"
+// 				})
+// 				autoLogin();
+// 			} else {
+// 				return data;
+// 			}
+			return data;
 		} else if (response.statusCode === 500) {
 			uni.showToast({
 				title: '500-' + response.errMsg,
 				duration: 2000,
-				image: "../../static/icon/error.png"
+				icon: 'none'
 			})
-		}else {
+		} else {
 			uni.showToast({
 				title: response.errMsg,
 				icon: 'none'
@@ -120,11 +126,49 @@ export const post = (url, data) => {
 	})
 }
 
+export const get = (url, data) => {
+	// http.config.baseUrl = "http://182.151.22.247:8899"
+	http.interceptor.request = (config) => {
+		if (url.indexOf("login") != -1) { //如果是登录接口
+			config.header = {
+				'content-type': 'application/x-www-form-urlencoded'
+			}
+		} else {
+			config.header = {
+				'content-type': 'application/x-www-form-urlencoded',
+				'accessToken': uni.getStorageSync("token")
+			}
+		}
+	}
+	http.interceptor.response = (response) => {
+		if (response.statusCode === 200) {
+			let data = JSON.parse(response.data)
+			return data;
+		} else if (response.statusCode === 500) {
+			uni.showToast({
+				title: '500-' + response.errMsg,
+				duration: 2000,
+				icon: 'none'
+			})
+		} else {
+			uni.showToast({
+				title: response.errMsg,
+				icon: 'none'
+			})
+		}
+	}
+	return http.request({
+		url: url,
+		method: 'GET',
+		data,
+	})
+}
 
 
 
 
 // 默认全部导出  import api from '@/common/vmeitime-http/'
 export default {
-	post
+	post,
+	get
 }

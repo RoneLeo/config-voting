@@ -40,6 +40,10 @@
         {
             "path" : "pages/code/code",
             "style" : {}
+        },
+        {
+            "path" : "pages/register/register",
+            "style" : {}
         }
     ],
     "globalStyle" : {

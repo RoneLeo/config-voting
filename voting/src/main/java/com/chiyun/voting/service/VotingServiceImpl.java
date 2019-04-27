@@ -1,6 +1,5 @@
 package com.chiyun.voting.service;
 
-import com.chiyun.voting.entity.ThemeEntity;
 import com.chiyun.voting.entity.VotingquestionEntity;
 import com.chiyun.voting.entity.VotingquestionoptionsEntity;
 import com.chiyun.voting.repository.VotingQORepository;

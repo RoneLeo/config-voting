@@ -31,10 +31,10 @@ public class ScoringServiceImpl {
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 ps.setInt(1, list.get(i).getHdid());
-                ps.setInt(4, list.get(i).getZdf());
-                ps.setInt(4, list.get(i).getZgf());
-                ps.setString(2, list.get(i).getMc());
-                ps.setString(3, list.get(i).getMcms());
+                ps.setInt(2, list.get(i).getZdf());
+                ps.setInt(3, list.get(i).getZgf());
+                ps.setString(4, list.get(i).getMc());
+                ps.setString(5, list.get(i).getMcms());
             }
 
             public int getBatchSize() {

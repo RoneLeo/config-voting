@@ -7,6 +7,7 @@ import java.util.Date;
 public class StringUtils {
 
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat dayformat = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * 判断目标字符串是否为空
@@ -82,5 +83,49 @@ public class StringUtils {
         if (isEmpty(str))
             return "%%";
         return "%" + str + "%";
+    }
+
+    /**
+     * 获取一天开始时间
+     *
+     * @param date
+     * @return
+     */
+    public static Date getDayBegin(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);//date 换成已经已知的Date对象
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        return cal.getTime();
+    }
+
+    /**
+     * 获取一天结束时间
+     *
+     * @param date
+     * @return
+     */
+    public static Date getDayEnd(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);//date 换成已经已知的Date对象
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        return cal.getTime();
+    }
+
+    /**
+     * 比较所给时间与当前时间差是否小于给定分钟数
+     *
+     * @param date
+     * @param minute
+     * @return
+     */
+    public static boolean datecompare(Date date, int minute) {
+        if (date == null)
+            return false;
+        int dev = (int) ((date.getTime() - System.currentTimeMillis()) / (60 * 1000));
+        return dev < minute && dev > 0;
     }
 }

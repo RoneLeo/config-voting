@@ -17,6 +17,10 @@ public class UserEntity {
     private String mm;
     @ApiModelProperty("用户名称")
     private String mc;
+    @ApiModelProperty("用户角色")
+    private int js;
+    @ApiModelProperty("备注")
+    private String bz;
 
     @Id
     @Column(name = "id")
@@ -57,6 +61,26 @@ public class UserEntity {
 
     public void setMc(String mc) {
         this.mc = mc;
+    }
+
+    @Basic
+    @Column(name = "role")
+    public int getJs() {
+        return js;
+    }
+
+    public void setJs(int js) {
+        this.js = js;
+    }
+
+    @Basic
+    @Column(name = "remarks")
+    public String getBz() {
+        return bz;
+    }
+
+    public void setBz(String bz) {
+        this.bz = bz;
     }
 
     @Override

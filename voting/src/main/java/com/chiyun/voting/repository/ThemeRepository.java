@@ -16,4 +16,12 @@ public interface ThemeRepository extends JpaRepository<ThemeEntity, Integer> {
     @Transactional
     @Query(value = "update theme set publish =?2 where id=?1", nativeQuery = true)
     int updateFbzt(int id, int fbzt);
+
+    @Query(value = "select * from theme where id = (select themeid from votingquestion where votingquestion.id=?1)", nativeQuery = true)
+    ThemeEntity findAllByVoteId(int vid);
+
+    @Query(value = "select * from theme where id = (select themeid from scoringquestion where scoringquestion.id=?1)", nativeQuery = true)
+    ThemeEntity findAllByScoreId(int vid);
+
+
 }

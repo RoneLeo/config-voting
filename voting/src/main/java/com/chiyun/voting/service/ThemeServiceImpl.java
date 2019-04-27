@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ThemeServiceImpl {
@@ -34,7 +32,11 @@ public class ThemeServiceImpl {
     @Resource
     private JdbcTemplate jdbcTemplate;
 
-    public ApiResult save(ThemeEntity themeEntity) {
+    public ThemeEntity save(ThemeEntity themeEntity) {
+        return themeRepository.save(themeEntity);
+    }
+
+    public ApiResult addOne(ThemeEntity themeEntity) {
         if (StringUtils.isEmpty(themeEntity.getBt()))
             return ApiResult.FAILURE("标题不能为空");
         themeEntity.setId(0);
@@ -75,16 +77,30 @@ public class ThemeServiceImpl {
         return optional.orElse(null);
     }
 
-    public ThemeEntity findAllInfoById(int id) {
+    public ThemeEntity findByVoteId(int id) {
+        return themeRepository.findAllByVoteId(id);
+    }
+
+    public ThemeEntity findByScoreId(int id) {
+        return themeRepository.findAllByScoreId(id);
+    }
+
+    public ThemeEntity findAllInfoById(int id, int uid) {
         Optional<ThemeEntity> optional = themeRepository.findById(id);
         if (!optional.isPresent())
             return null;
         ThemeEntity entity = optional.get();
+        if (entity.getJssj().before(new Date())) {
+            entity.setSffb(2);
+            save(entity);
+        }
         if (entity.getHdlx() == 0) {
             List<VotingquestionEntity> list = votingquestionRepository.findAllByHdid(entity.getId());
+            int count = votingquestionRepository.existsBypidAndHdid(entity.getId(), uid);
+            entity.setTpzt(count == 0 ? 0 : 1);
             entity.setVotelist(list);
         } else {
-            List<ScoringquestionEntity> slist = scoringQRepository.findAllByHdid(entity.getId());
+            List<Map> slist = scoringQRepository.findAllByHdid(entity.getId(), uid);
             List<ScoringquestionoptionsEntity> olist = scoringQORepository.findAllByHdid(entity.getId());
             entity.setScorelist(slist);
             entity.setScoreoblist(olist);

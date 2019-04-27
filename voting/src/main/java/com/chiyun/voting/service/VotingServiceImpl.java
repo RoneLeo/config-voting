@@ -1,8 +1,10 @@
 package com.chiyun.voting.service;
 
+import com.chiyun.voting.entity.VotingEntity;
 import com.chiyun.voting.entity.VotingquestionEntity;
 import com.chiyun.voting.entity.VotingquestionoptionsEntity;
 import com.chiyun.voting.repository.VotingQORepository;
+import com.chiyun.voting.repository.VotingRepository;
 import com.chiyun.voting.repository.VotingquestionRepository;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,11 +22,13 @@ public class VotingServiceImpl {
     private final VotingquestionRepository votingquestionRepository;
     private final VotingQORepository votingQORepository;
     private final JdbcTemplate jdbcTemplate;
+    private final VotingRepository votingRepository;
 
-    public VotingServiceImpl(VotingquestionRepository votingquestionRepository, VotingQORepository votingQORepository, JdbcTemplate jdbcTemplate) {
+    public VotingServiceImpl(VotingquestionRepository votingquestionRepository, VotingQORepository votingQORepository, JdbcTemplate jdbcTemplate, VotingRepository votingRepository) {
         this.votingquestionRepository = votingquestionRepository;
         this.votingQORepository = votingQORepository;
         this.jdbcTemplate = jdbcTemplate;
+        this.votingRepository = votingRepository;
     }
 
     @Transactional
@@ -88,4 +92,20 @@ public class VotingServiceImpl {
         return votingQORepository.deleteAllById(id);
     }
 
+    @Transactional
+    public void vote(List<VotingEntity> list) {
+        String sql = "insert into voting(pid,qid,oid,remark) values(?,?,?,?)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setInt(1, list.get(i).getPid());
+                ps.setInt(2, list.get(i).getQid());
+                ps.setInt(3, list.get(i).getOid());
+                ps.setString(4, list.get(i).getBz());
+            }
+
+            public int getBatchSize() {
+                return list.size();
+            }
+        });
+    }
 }

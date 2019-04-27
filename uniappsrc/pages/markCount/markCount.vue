@@ -11,7 +11,7 @@
 			<view class="vote-tt" style="margin-top: 40upx;">
 				评分期限：<text class="vote-subtt">2019-01-02 至 2019-02-01</text>
 			</view>
-			<view class="margin-top">
+			<!-- <view class="margin-top">
 				<view class="count-item bg-green light " style="color: #333; border-radius: 20upx;padding: 20upx;display:block;line-height: 2;">
 					<view style="font-size: 14px;">
 						NO.1 易烊千玺 总分：100
@@ -21,7 +21,7 @@
 						<view>领导能力加应变能力加临场发挥：100分 NO.1</view>
 					</view>
 				</view>
-			</view>
+			</view> -->
 			
 			<view class="margin-top">
 				<view class="count-item bg-blue light" style="height: 80upx;">
@@ -44,10 +44,10 @@
 					<view class="count-item-name">王源</view>
 					<view class="count-item-score">100</view>
 					<view class="count-item-detail">
-						<view>管理能力：100分 NO.1</view>
-						<view>领导能力加应变能力加临场发挥：100分 NO.1</view>
-						<view>领导能力加应变能力加临场发挥把卡啊：100分 NO.1</view>
-						<view>领导能力加应变能力加临场发挥：100分 NO.1</view>
+						<view>管理能力：100分 排名：1</view>
+						<view>领导能力加应变能力加临场发挥：100分 排名：1</view>
+						<view>领导能力加应变能力加临场发挥把卡啊：100分 排名：1</view>
+						<view>领导能力加应变能力加临场发挥：100分 排名：1</view>
 					</view>
 				</view>
 				<view class="count-item bg-blue light">

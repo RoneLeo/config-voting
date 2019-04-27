@@ -2,116 +2,89 @@
 	<view class="page">
 		<login></login>
 		<cu-custom v-show="isBack" bgColor="bg-blue" :isBack="isBack">
-			<block slot="content" style="width: calc(100% - 100px);">2019九室爱岗敬业选举</block>
+			<block slot="content" style="width: calc(100% - 100px);">{{activity && activity.bt}}</block>
 		</cu-custom>
 
 		<view class="vote-wrapper padding">
 			<view class="vote-tt title" style="font-size: 18px;">
-				2019九室爱岗敬业选举
+				{{activity.bt}}
 			</view>
 			<view class="vote-tt" style="margin-top: 40upx;">
-				投票期限：<text class="vote-subtt">2019-01-02 至 2019-02-01</text>
+				投票期限：<text class="vote-subtt">{{activity.kssj && activity.kssj.substring(0,11)}} 至 {{activity.kssj && activity.kssj.substring(0,11)}}</text>
 			</view>
 			<view class="vote-tt">
-				投票说明：<text class="vote-subtt">投票说明投票说明投票说明投票说明投票说明</text>
+				投票说明：<text class="vote-subtt">{{activity.nr}}</text>
 			</view>
 
 			<view class="padding">
 				<scroll-view class="scroll-wrapper" scroll-x="false" :scroll-into-view="'item' + current">
-					<view id="item1" class="scroll-view-item">
+					<view :id="'item' + (index + 1)" v-for="(vote, index) in activity.votelist" class="scroll-view-item">
 						<view class="item-block">
 							<view class="item-tt">
-								<view class='cu-tag radius bg-blue' style="margin-right: 20upx;">单选</view>
-								你认为下面谁最应该获得最佳奖项？
+								<view class='cu-tag radius bg-blue' style="margin-right: 20upx;">{{myJson.vote[vote.tplx]}}</view>
+								{{vote.bt}}
 							</view>
 
 							<view class="item-td padding-sm">
-								<radio-group @change="radioChange" style="width: 100%;">
-									<label v-for="(item, index) in 4" :key="item">
-										<radio :value="''+item" :checked="index === 1" />
+								<radio-group v-show="vote.tplx == '1'" @change="radioChange" style="width: 100%;">
+									<label v-for="(opt, optIndex) in vote.volist" :key="optIndex">
+										<radio :value="opt.id+''" />
 										<view class="label-text">
-											某某{{item}}某某{{item}}某某{{item}}某某{{item}}某某{{item}}某某{{item}}某某{{item}}某某{{item}}某某{{item}}
+											<text v-show="opt.xxlx == 1 || opt.xxlx == 3"> {{opt.xxmc}}</text>
+											<view v-show="opt.xxlx == 2">
+												<image :src="opt.xxmc" mode="" style="width: 200upx; height: 150upx;"></image>
+											</view>
+											<view v-show="opt.xxlx == 4">
+												<input placeholder="请填写"></input>
+											</view>
 											<view class="detail">详情</view>
 										</view>
 									</label>
 								</radio-group>
-							</view>
-						</view>
-
-					</view>
-
-					<view id="item2" class="scroll-view-item">
-						<view class="item-block">
-							<view class="item-tt">
-								<view class='cu-tag radius bg-blue' style="margin-right: 20upx;">多选</view>
-								你认为下面谁最应该获得最佳奖项？
-							</view>
-
-							<view class="item-td padding-sm">
-								<checkbox-group ref="checkbox1" @change="checkboxChange(1)">
-									<label v-for="(item, index) in 5" :key="item">
-										<checkbox :value="''+item" />
-										<view class="label-text">多选项{{item}}多选项{{item}}</view>
-									</label>
-								</checkbox-group>
-							</view>
-						</view>
-					</view>
-
-					<view id="item3" class="scroll-view-item">
-						<view class="item-block">
-							<view class="item-tt">
-								<view class='cu-tag radius bg-blue' style="margin-right: 20upx;">不定项</view>
-								你认为下面谁最应该获得最佳奖项？
-							</view>
-							<view class="item-td padding-sm">
-								<checkbox-group ref="checkbox2" @change="checkboxChange(2)">
-									<label v-for="(item, index) in checkboxItems" :key="item.value">
-										<view>
-											<checkbox :value="item.value" />
+								<checkbox-group v-show="vote.tplx == '2'" ref="checkbox1" @change="checkboxChange(1)">
+									<label v-for="(opt, optIndex) in vote.volist" :key="optIndex">
+										<checkbox :value="opt.id+''" />
+										<view class="label-text">
+											<text v-show="opt.xxlx == 1 || opt.xxlx == 3"> {{opt.xxmc}}</text>
+											<view v-show="opt.xxlx == 2">
+												<image :src="opt.xxmc" mode="" style="width: 200upx; height: 150upx;"></image>
+											</view>
+											<view v-show="opt.xxlx == 4">
+												<input placeholder="请填写"></input>
+											</view>
+											<view class="detail">详情</view>
 										</view>
-										<view class="label-text">{{item.name}}</view>
 									</label>
 								</checkbox-group>
+
 							</view>
 						</view>
-					</view>
 
+					</view>
 				</scroll-view>
 				<view class="pages padding justify-center">
 					<button class="cu-btn bg-blue" @tap="lastOne">上一题</button>
-					<text style="width: 100upx;text-align: center;display: inline-block;align-self: center;">{{current}} / 3</text>
+					<text style="width: 100upx;text-align: center;display: inline-block;align-self: center;">{{current}} / {{activity.votelist && activity.votelist.length}}</text>
 					<button class="cu-btn bg-blue" @tap="nextOne">下一题</button>
 				</view>
-
 			</view>
-
-			<view>
-				<!-- <el-checkbox :options="printer.operate" v-model="printer.selected" max="2" @change="select" style="margin-top:-10px;"></el-checkbox> -->
+			
+			<view class="padding" style="text-align: center;">
+				<button class="cu-btn bg-blue" @tap="createCode" style="margin-top: 60upx;">发布本次活动</button>
 			</view>
-
-			<!-- <view class="vote-tt" style="display: flex;justify-content: flex-start;">
-				<view>投票注解：</view>
-				<view class="vote-subtt">
-					<view>
-						单选：投票人选择的选项数等于1。
-					</view>
-					<view>
-						多选：投票人选择的选项大于等于2。
-					</view>
-					<view>
-						不定项：投票人选择的选项大于等于1。
-					</view>
-				</view>
-			</view> -->
 		</view>
 	</view>
 </template>
 
 <script>
+	import myJson from '../../static/radio.js'
 	export default {
 		data() {
 			return {
+				hdid: null,
+				user: {},
+				myJson: myJson,
+				activity: {},
 				isBack: false,
 				current: 1,
 				slider: null,
@@ -163,9 +136,20 @@
 			// 			this.$refs.input1.$el.appendChild(input)
 			//#endif
 		},
-		onLoad() {
+		onLoad(params) {
+			this.hdid = params.hdid;
+			this.user = this.getGlobalUser() || {};
 			if (getCurrentPages().length > 1) {
 				this.isBack = true;
+			}
+			if (this.hdid) {
+				this.$api.post('/theme/findAllInfoById', {
+					id: this.hdid
+				}).then(res => {
+					if (res.resCode == 200) {
+						this.activity = res.data;
+					}
+				})
 			}
 		},
 		methods: {
@@ -199,7 +183,7 @@
 				// 				this.currentItem = 'item' + (parseInt(num) - 1)
 			},
 			nextOne() {
-				if (this.current < 3) {
+				if (this.current < this.activity.votelist.length) {
 					this.current++;
 				}
 				// 				var num = this.currentItem.replace(/[^0-9]/ig, "");

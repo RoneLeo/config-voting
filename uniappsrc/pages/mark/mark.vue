@@ -82,7 +82,7 @@
 			
 		},
 		onLoad(params) {
-			this.ID = params.id; //获取到轰动id来更新数据
+			this.ID = params.hdid; //获取到轰动id来更新数据
 			this.js = params.js
 			if (getCurrentPages().length > 1) {
 				this.isBack = true;

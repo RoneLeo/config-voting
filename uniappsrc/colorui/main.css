@@ -236,7 +236,7 @@ switch .uni-switch-input {
 
 switch .wx-switch-input:not([class*="bg-"]),
 switch .uni-switch-input:not([class*="bg-"]) {
-	background: var(--grey) !important;
+	/* background: var(--grey) !important; */
 }
 
 switch .wx-switch-input::after,
@@ -1407,8 +1407,10 @@ button.icon.lg {
 
 .cu-list.menu-avatar>.cu-item .content {
 	position: absolute;
-	left: 146upx;
-	width: calc(100% - 96upx - 60upx - 120upx - 20upx);
+	/* left: 146upx; */
+	left: 40upx;
+	width: calc(100% - 40upx - 40upx);
+	/* width: calc(100% - 96upx - 60upx - 120upx - 20upx); */
 	line-height: 1.6em;
 }
 

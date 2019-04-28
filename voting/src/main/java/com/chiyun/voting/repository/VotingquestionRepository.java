@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface VotingquestionRepository extends JpaRepository<VotingquestionEntity, Integer> {
@@ -15,6 +16,9 @@ public interface VotingquestionRepository extends JpaRepository<VotingquestionEn
     int deleteAllById(int id);
 
     List<VotingquestionEntity> findAllByHdid(int hdid);
+
+    @Query(value = "select id,title bt from votingquestion where themeid = ?1 ", nativeQuery = true)
+    List<Map> findAllIdByHdid(int hdid);
 
     @Query(value = "select count(*) from votingquestion,voting where themeid = ?1 and qid = id and pid = ?2", nativeQuery = true)
     int existsBypidAndHdid(int hdid, int pid);

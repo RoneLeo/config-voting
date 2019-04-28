@@ -4,17 +4,16 @@ import com.chiyun.voting.commons.ApiResult;
 import com.chiyun.voting.commons.MustLogin;
 import com.chiyun.voting.commons.SessionHelper;
 import com.chiyun.voting.entity.ThemeEntity;
+import com.chiyun.voting.entity.VotingquestionEntity;
 import com.chiyun.voting.service.ThemeServiceImpl;
+import com.chiyun.voting.service.VotingServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Api("活动管理")
 @RestController
@@ -22,6 +21,8 @@ import java.util.Map;
 public class ThemeController {
     @Resource
     private ThemeServiceImpl themeService;
+    @Resource
+    private VotingServiceImpl votingService;
 
     @PostMapping("/add")
     @ApiOperation("活动添加")
@@ -123,5 +124,45 @@ public class ThemeController {
         } else {
             return ApiResult.SUCCESS();
         }
+    }
+
+    @RequestMapping("/getResult")
+    @ApiOperation("获取活动结果")
+//    @MustLogin
+    public ApiResult getResult(@RequestParam @ApiParam(value = "活动id", required = true) int hdid) {
+        ThemeEntity themeEntity = themeService.findById(hdid);
+        if (themeEntity.getSffb() == 0) {
+            return ApiResult.FAILURE("活动未开启");
+        } else if (themeEntity.getSffb() == 1 && themeEntity.getJssj().after(new Date())) {
+            return ApiResult.FAILURE("活动未结束");
+        }
+        if (themeEntity.getKssj().after(new Date()))
+            return ApiResult.FAILURE("活动未开始");
+        if (themeEntity.getJssj().before(new Date())) {
+            themeEntity.setSffb(2);
+            themeService.save(themeEntity);
+        }
+        if (themeEntity.getHdlx() == 1) {
+            List<Map> list = themeService.getScoreResult(themeEntity.getId());
+            Map map = new HashMap();
+            map.put("hddata", themeEntity);
+            map.put("result", list);
+            return ApiResult.SUCCESS(map);
+        } else {
+            List<Map> list = new ArrayList<>();
+            List<Map> entityList = votingService.findAllIdByHdid(themeEntity.getId());
+            for (Map entity : entityList) {
+                List<Map> rlist = themeService.getVoteResult((Integer) entity.get("id"));
+                Map entitymap = new HashMap();
+                entitymap.put("vote", entity);
+                entitymap.put("result", rlist);
+                list.add(entitymap);
+            }
+            Map map = new HashMap();
+            map.put("hddata", themeEntity);
+            map.put("result", list);
+            return ApiResult.SUCCESS(map);
+        }
+
     }
 }

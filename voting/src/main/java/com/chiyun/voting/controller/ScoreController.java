@@ -144,6 +144,8 @@ public class ScoreController {
             themeService.save(themeEntity);
             return ApiResult.FAILURE("打分活动已结束");
         }
+        if (themeEntity.getKssj().after(new Date()))
+            return ApiResult.FAILURE("打分活动暂未开始");
         if (scoringQService.hasscore(list.get(0).getQid(), SessionHelper.getuid()) > 0)
             return ApiResult.FAILURE("已参与该次打分");
         try {

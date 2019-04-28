@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -82,6 +83,10 @@ public class VotingServiceImpl {
 
     public List<VotingquestionEntity> findAllByHdid(int hdid) {
         return votingquestionRepository.findAllByHdid(hdid);
+    }
+
+    public List<Map> findAllIdByHdid(int hdid) {
+        return votingquestionRepository.findAllIdByHdid(hdid);
     }
 
     public VotingquestionoptionsEntity saveVQO(VotingquestionoptionsEntity entity) {

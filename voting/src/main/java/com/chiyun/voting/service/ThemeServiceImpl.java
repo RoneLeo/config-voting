@@ -5,10 +5,7 @@ import com.chiyun.voting.entity.ScoringquestionEntity;
 import com.chiyun.voting.entity.ScoringquestionoptionsEntity;
 import com.chiyun.voting.entity.ThemeEntity;
 import com.chiyun.voting.entity.VotingquestionEntity;
-import com.chiyun.voting.repository.ScoringQORepository;
-import com.chiyun.voting.repository.ScoringQRepository;
-import com.chiyun.voting.repository.ThemeRepository;
-import com.chiyun.voting.repository.VotingquestionRepository;
+import com.chiyun.voting.repository.*;
 import com.chiyun.voting.utils.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -29,6 +26,10 @@ public class ThemeServiceImpl {
     private ScoringQRepository scoringQRepository;
     @Resource
     private ScoringQORepository scoringQORepository;
+    @Resource
+    private ScoringRepository scoringRepository;
+    @Resource
+    private VotingRepository votingRepository;
     @Resource
     private JdbcTemplate jdbcTemplate;
 
@@ -159,5 +160,13 @@ public class ThemeServiceImpl {
             return ApiResult.FAILURE("已发布的打分活动不能修改");
         }
         return ApiResult.SUCCESS();
+    }
+
+    public List<Map> getScoreResult(int hdid) {
+        return scoringRepository.getResult(hdid);
+    }
+
+    public List<Map> getVoteResult(int qid) {
+        return votingRepository.getResultByQid(qid);
     }
 }

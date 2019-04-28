@@ -75,7 +75,8 @@ export const post = (url, data) => {
 			config.header = {
 				'content-type': 'application/x-www-form-urlencoded'
 			}
-		} else if(url.indexOf("score/addScoreDx") != -1 || url.indexOf("score/addScoreOP") != -1){
+		} else if(url.indexOf("score/addScoreDx") != -1 || url.indexOf("score/addScoreOP") != -1
+			|| url.indexOf("score/score") != -1 || url.indexOf("voting/vote") != -1){
 			config.header = {
 				// 'content-type': 'application/x-www-form-urlencoded',
 				'content-type': 'application/json',

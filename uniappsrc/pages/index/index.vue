@@ -23,7 +23,7 @@
 			</view>
 		</view>
 		<view style="margin-top: 100upx;">
-			<view v-show="wfbList.length" @tap="wfbShow = !wfbShow" class="cu-bar justify-start bg-white">
+			<view v-show="wfbList && wfbList.length" @tap="wfbShow = !wfbShow" class="cu-bar justify-start bg-white">
 				<view class="action sub-title">
 					<text class="text-xl text-bold text-orange">未发布</text>
 					<text class="bg-orange" style="width:2rem"></text>
@@ -49,7 +49,7 @@
 					</view>
 
 					<view class="move">
-						<view @tap="gotoPage(index)" class="bg-green">
+						<view @tap="gotoPage(wfbList, index)" class="bg-green">
 							发布
 						</view>
 						<view @tap="deleteOne(index)" class="bg-red">删除</view>
@@ -67,14 +67,17 @@
 				<view v-show="!yfbShow" style="font-size: 12px;color: #aaa;margin-left: 20upx;">已隐藏</view>
 			</view>
 			<view v-show="yfbShow" class="cu-timeline">
-				<view class="cu-time">06-17</view>
-				<view class="cu-item">
-					<view class="content">
-						<view class="cu-tag bg-green light radius">01:00</view>
-						<navigator url="../../pages/vote/vote"> 【2019九室爱岗敬业选举】</navigator>
+				<template v-for="(item, index) in yfbList">
+					<view class="cu-time">{{item.jssj.substring(5, 11)}}</view>
+					<view class="cu-item">
+						<view class="content" @tap="gotoPage(yfbList, index)">
+							<view class="cu-tag bg-green light radius">{{item.hdlx == '0' ? '投票活动' : '评分活动'}}</view>
+							【{{item.bt}}】
+						</view>
 					</view>
-				</view>
-				<view class="cu-item">
+				</template>
+
+				<!-- <view class="cu-item">
 					<view class="content">
 						<view class="cu-tag bg-green light radius">10:00</view> 【工会科室会议表决】
 					</view>
@@ -84,7 +87,7 @@
 						<view class="cu-tag bg-green light radius">10:00</view>
 						<navigator url="../../pages/mark/mark?id=10">【科研组专家打分活动】</navigator>
 					</view>
-				</view>
+				</view> -->
 			</view>
 		</view>
 
@@ -97,7 +100,17 @@
 				<view v-show="!ywcShow" style="font-size: 12px;color: #aaa;margin-left: 20upx;">已隐藏</view>
 			</view>
 			<view v-show="ywcShow" class="cu-timeline">
-				<view class="cu-time">昨天</view>
+				<template v-for="(item, index) in ywcList">
+					<view class="cu-time">{{item.jssj.substring(5, 11)}}</view>
+					<view class="cu-item" :class="index%2?'text-cyan':'text-blue'">
+						<view class="content shadow-blur" :class="index%2?'bg-cyan':'bg-blue'" @tap="goToPage(index)">
+							<view class="cu-tag bg-white light radius" :class="index%2?'text-cyan':'text-blue'">{{item.hdlx == '0' ? '投票活动' : '评分活动'}}</view>
+							【{{item.bt}}】
+							<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
+						</view>
+					</view>
+				</template>
+				<!-- <view class="cu-time">昨天</view>
 				<view class="cu-item text-blue">
 					<view class="content bg-blue shadow-blur">
 						<text>20:00</text>
@@ -124,7 +137,7 @@
 						<text>20:00</text> 【2019XX党支部支部互评】
 						<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
 					</view>
-				</view>
+				</view> -->
 			</view>
 		</view>
 	</view>
@@ -174,14 +187,17 @@
 			}
 		},
 		methods: {
-			gotoPage(index) {
-				if (this.wfbList[index].hdlx) { //hdlx: 0 投票， 1 打分
+			goToActivityPage(index) {
+
+			},
+			gotoPage(data, index) {
+				if (data[index].hdlx) { //hdlx: 0 投票， 1 打分
 					uni.navigateTo({
-						url: '../../pages/mark/mark?hdid=' + this.wfbList[index].id
+						url: '../../pages/mark/mark?hdid=' + data[index].id
 					})
 				} else {
 					uni.navigateTo({
-						url: '../../pages/vote/vote?hdid=' + this.wfbList[index].id
+						url: '../../pages/vote/vote?hdid=' + data[index].id
 					})
 				}
 			},
@@ -235,7 +251,9 @@
 				}
 			},
 			gotoUser() {
-
+				uni.navigateTo({
+					url: '../../pages/user/user'
+				})
 			},
 			gotoVote() {
 				uni.navigateTo({

@@ -37,11 +37,20 @@
 			if (getCurrentPages().length > 1) {
 				this.isBack = true;
 			}
+// 			console.log(this.lx)
+// 			let str = this.lx == 'mark' ? ('/mark/mark?hdid=' + this.id ): ('/vote/vote?hdid=' + this.id);
+// 			this.val = 'http://192.168.0.198:8080/#/pages' + str;
+// 			console.log(this.val)
+		},
+		onShow() {
+			
 		},
 		mounted() {
-			this.val = 'http://192.168.0.198:8080/#/pages' + this.lx == 'mark' ? '/mark/mark?hdid=' + this.id :
-				'/vote/vote?hdid=' + this.id;
-			console.log(this.val)
+			console.log(this.lx && this.id)
+			if(this.lx && this.id) {
+				let str = this.lx == 'mark' ? ('/mark/mark?hdid=' + this.id ): ('/vote/vote?hdid=' + this.id);
+				this.val = 'http://192.168.0.198:8080/#/pages' + str;
+			}
 		},
 		methods: {
 			downloadFile(fileName, content) {

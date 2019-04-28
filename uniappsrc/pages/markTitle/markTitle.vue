@@ -2,21 +2,28 @@
 	<view class="page">
 		<login></login>
 		<cu-custom v-show="isBack" bgColor="bg-blue" :isBack="isBack">
-			<block slot="content" style="width: calc(100% - 100px);">科研组专家打分活动</block>
+			<block slot="content" style="width: calc(100% - 100px);">{{activity && activity.bt}}</block>
 		</cu-custom>
 
 		<view class="vote-wrapper padding">
 			<view class="vote-tt title" style="font-size: 18px;">
-				2019科研组专家打分活动
+				{{activity && activity.bt}}
 			</view>
 			<view class="vote-tt" style="margin-top: 40upx;">
-				考评对象：<text class="vote-subtt">Lucy</text>
+				考评对象：<text class="vote-subtt">{{obj.dx}}</text>
 			</view>
 			<view class="vote-tt">
-				考评说明：<text class="vote-subtt">投票说明投票说明投票说明投票说明投票说明</text>
+				活动状态：<text class="vote-subtt">{{activity.sffb== '0' ? '尚未发布' : (activity.sffb== '1' ? '已发布' : '活动已结束')}}</text>
 			</view>
+			<view class="vote-tt">
+				活动期限：<text class="vote-subtt">{{activity.kssj && activity.kssj.substring(0,11)}} 至 {{activity.kssj && activity.kssj.substring(0,11)}}</text>
+			</view>
+			<view class="vote-tt">
+				活动说明：<text class="vote-subtt">{{activity.nr}}</text>
+			</view>
+			
 
-			<view class="padding">
+			<view class="padding" style="margin-top: 40upx;">
 				<view class="mark-item">
 					<text class="mark-name">考评内容</text>
 					<text class="mark-status">打分区间</text>
@@ -24,15 +31,15 @@
 						打分
 					</text>
 				</view>
-				<view class="mark-item" v-for="(item, index) in data" :key="index">
-					<text class="mark-name">{{item.name}}</text>
+				<view class="mark-item" v-for="(item, index) in activity.scoreoblist" :key="index">
+					<text class="mark-name">{{item.mc}}</text>
 					<view class="mark-status">
-						<text class="mark-num">{{item.min}}</text>
+						<text class="mark-num">{{item.zdf}}</text>
 						<view class="mark-range">
 							<Range :min='rangeValues[index][0]' :width="180" :max='rangeValues[index][1]' v-model='item.val' :data-index="index"
 							 @rangechange='onRangeChange'></Range>
 						</view>
-						<text class="mark-num">{{item.max}}</text>
+						<text class="mark-num">{{item.zgf}}</text>
 					</view>
 					<text class="mark-input">
 						{{scores[index]}}
@@ -40,8 +47,7 @@
 				</view>
 
 			</view>
-
-			<view style="margin-top: 50upx;text-align: center;">
+			<view v-show="activity.sffb=='1' && curTime > strTime && curTime < endTime" style="margin-top: 50upx;text-align: center;">
 				<button class="cu-btn bg-blue shadow-blur" @tap="saveRes">保存打分结果</button>
 			</view>
 
@@ -53,11 +59,18 @@
 	export default {
 		data() {
 			return {
+				hdid: null,
+				obid: null,
 				isBack: false,
 				rangeValues: [], //当前区间值
 				slideMin: 30, //slider最小值
 				slideMax: 60, //slider最大值
 				scores: [],
+				activity:{},
+				obj: {},
+				curTime: '',
+				strTime: '',
+				endTime: '',
 				data: [{
 						name: '专业能力专业能力专业能力',
 						min: 0,
@@ -84,23 +97,73 @@
 		mounted() {
 
 		},
-		onLoad() {
+		onLoad(params) {
+			this.hdid = params.hdid;
+			this.obid = params.obid;
+			this.user = this.getGlobalUser() || {};
+			if(this.hdid && this.obid) {
+				this.getData();
+			}
 			if (getCurrentPages().length > 1) {
 				this.isBack = true;
 			}
-			this.rangeValues = [];
-			this.scores = [];
-			this.data.forEach(item => {
-				this.rangeValues.push([item.min, item.max]);
-				item.val = item.max;
-				this.scores.push(item.max)
-			})
+		},
+		onShow() {
+			this.user = this.getGlobalUser() || {};
+			if(this.hdid && this.obid) {
+				this.getData();
+			}
 		},
 		methods: {
-			
+			getData() {
+				this.$api.post('/theme/findAllInfoById', {
+					id: this.hdid
+				}).then(res => {
+					if (res.resCode == 200) {
+						this.activity = res.data;
+						this.curTime = new Date().getTime(); 
+						this.strTime = new Date(Date.parse(this.activity.kssj.replace(/-/g, "/"))).getTime(); // 时间戳
+						this.endTime = new Date(Date.parse(this.activity.jssj.replace(/-/g, "/"))).getTime(); // 时间戳
+						this.activity.scorelist.forEach(item => {
+							if(item.id == this.obid) {
+								this.obj = item
+								return
+							}
+						})
+						this.data = this.activity.scoreoblist;
+						this.rangeValues = [];
+						this.scores = [];
+						this.data.forEach(item => {
+							this.rangeValues.push([item.zdf, item.zgf]);
+							item.val = item.zdf;
+							this.scores.push(item.zgf)
+						})
+					}
+				})
+			},
 			saveRes() {
+				console.log(this.data)
 				let res = this.data.map(item => {
-					return item.val
+					return {
+						df: item.val,
+						oid: item.id,
+						qid: this.obid,
+						pid: this.user.id
+					}
+				})
+				this.$api.post('/score/score', JSON.stringify(res)).then(res => {
+					if(res.resCode == 200) {
+						uni.showToast({
+							title: '保存成功！',
+							icon: 'none'
+						})
+						uni.navigateBack()
+					}else {
+						uni.showToast({
+							title: '保存失败！',
+							icon: 'none'
+						})
+					}
 				})
 				console.log(res)
 			},

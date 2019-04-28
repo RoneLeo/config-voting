@@ -44,6 +44,10 @@
         {
             "path" : "pages/register/register",
             "style" : {}
+        },
+        {
+            "path" : "pages/user/user",
+            "style" : {}
         }
     ],
     "globalStyle" : {

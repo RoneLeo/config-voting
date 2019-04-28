@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -125,8 +126,18 @@ public class ThemeEntity {
     }
 
     List<VotingquestionEntity> votelist;
-    List<ScoringquestionEntity> scorelist;
+    List<Map> scorelist;
     List<ScoringquestionoptionsEntity> scoreoblist;
+    int tpzt;
+
+    @Transient
+    public int getTpzt() {
+        return tpzt;
+    }
+
+    public void setTpzt(int tpzt) {
+        this.tpzt = tpzt;
+    }
 
     @Transient
     public List<VotingquestionEntity> getVotelist() {
@@ -138,11 +149,11 @@ public class ThemeEntity {
     }
 
     @Transient
-    public List<ScoringquestionEntity> getScorelist() {
+    public List<Map> getScorelist() {
         return scorelist;
     }
 
-    public void setScorelist(List<ScoringquestionEntity> scorelist) {
+    public void setScorelist(List<Map> scorelist) {
         this.scorelist = scorelist;
     }
 

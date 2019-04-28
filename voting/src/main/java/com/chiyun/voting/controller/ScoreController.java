@@ -2,19 +2,22 @@ package com.chiyun.voting.controller;
 
 import com.chiyun.voting.commons.ApiResult;
 import com.chiyun.voting.commons.MustLogin;
+import com.chiyun.voting.commons.SessionHelper;
+import com.chiyun.voting.entity.ScoringEntity;
 import com.chiyun.voting.entity.ScoringquestionEntity;
 import com.chiyun.voting.entity.ScoringquestionoptionsEntity;
+import com.chiyun.voting.entity.ThemeEntity;
 import com.chiyun.voting.service.ScoringServiceImpl;
 import com.chiyun.voting.service.ThemeServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Api("打分管理")
 @RestController
@@ -25,7 +28,7 @@ public class ScoreController {
     @Resource
     private ThemeServiceImpl themeService;
 
-    @RequestMapping("addScoreOP")
+    @RequestMapping("addScoreOp")
     @ApiOperation("添加打分项目")
     @MustLogin(rolerequired = 1)
     public ApiResult addScoreOP(@RequestBody List<ScoringquestionoptionsEntity> list) {
@@ -123,5 +126,40 @@ public class ScoreController {
             return ApiResult.FAILURE();
         }
         return ApiResult.SUCCESS();
+    }
+
+    @PostMapping("/score")
+    @ApiOperation("打分")
+    @MustLogin
+    public ApiResult score(@RequestBody List<ScoringEntity> list) {
+        if (list == null || list.isEmpty())
+            return ApiResult.FAILURE("没有打分信息");
+        ThemeEntity themeEntity = themeService.findByScoreId(list.get(0).getQid());
+        if (themeEntity.getSffb() == 0)
+            return ApiResult.FAILURE("打分活动未开启");
+        else if (themeEntity.getSffb() == 2)
+            return ApiResult.FAILURE("打分活动已结束");
+        if (themeEntity.getJssj().before(new Date())) {
+            themeEntity.setSffb(2);
+            themeService.save(themeEntity);
+            return ApiResult.FAILURE("打分活动已结束");
+        }
+        if (scoringQService.hasscore(list.get(0).getQid(), SessionHelper.getuid()) > 0)
+            return ApiResult.FAILURE("已参与该次打分");
+        try {
+            scoringQService.score(list);
+            return ApiResult.SUCCESS();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ApiResult.FAILURE();
+        }
+    }
+
+    @MustLogin
+    @ApiOperation("用户获取一个对象的打分情况")
+    @RequestMapping("/getScoreByQid")
+    public ApiResult getScoreByQidAndPid(@RequestParam @ApiParam(value = "打分对象id", required = true) int id) {
+        List<Map> list = scoringQService.findAllByPidAndQid(SessionHelper.getuid(), id);
+        return ApiResult.SUCCESS(list);
     }
 }

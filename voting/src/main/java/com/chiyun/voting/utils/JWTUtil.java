@@ -86,7 +86,7 @@ public class JWTUtil {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim("uid").asInt();
         } catch (JWTDecodeException e) {
-            return null;
+            return 0;
         }
     }
 
@@ -98,7 +98,7 @@ public class JWTUtil {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim("role").asInt();
         } catch (JWTDecodeException e) {
-            return null;
+            return 0;
         }
     }
 

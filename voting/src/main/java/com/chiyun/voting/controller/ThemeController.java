@@ -27,13 +27,34 @@ public class ThemeController {
     @ApiOperation("活动添加")
     @MustLogin(rolerequired = 1)
     public ApiResult add(ThemeEntity themeEntity) {
-        return themeService.save(themeEntity);
+        return themeService.addOne(themeEntity);
+    }
+
+    @PostMapping("/update")
+    @ApiOperation("活动修改")
+    @MustLogin(rolerequired = 1)
+    public ApiResult update(ThemeEntity themeEntity) {
+        ThemeEntity entity = themeService.findById(themeEntity.getId());
+        if (entity == null)
+            return ApiResult.FAILURE("不存在的活动");
+        try {
+            themeService.save(themeEntity);
+            return ApiResult.SUCCESS(themeEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ApiResult.FAILURE();
+        }
     }
 
     @PostMapping("/delete")
     @ApiOperation("活动删除")
     @MustLogin(rolerequired = 1)
     public ApiResult<Object> delete(@RequestParam @ApiParam(value = "活动id", required = true) int hdid) {
+        ThemeEntity themeEntity = themeService.findById(hdid);
+        if (themeEntity == null)
+            return ApiResult.FAILURE("不存在的活动");
+        if (themeEntity.getSffb() != 0)
+            return ApiResult.FAILURE("已发布的活动不能删除");
         int sum = themeService.deleteById(hdid);
         if (sum == 1)
             return ApiResult.SUCCESS();
@@ -42,8 +63,9 @@ public class ThemeController {
 
     @PostMapping("/findAllInfoById")
     @ApiOperation("根据活动id查询所有信息")
-    public ApiResult<ThemeEntity> findAllInfoById(@RequestParam @ApiParam(value = "活动id", required = true) int id) {
-        ThemeEntity entity = themeService.findAllInfoById(id);
+    @MustLogin
+    public ApiResult findAllInfoById(@RequestParam @ApiParam(value = "活动id", required = true) int id) {
+        ThemeEntity entity = themeService.findAllInfoById(id, SessionHelper.getuid());
         return ApiResult.SUCCESS(entity);
     }
 
@@ -78,5 +100,28 @@ public class ThemeController {
         if (sum > 0)
             return ApiResult.SUCCESS();
         return ApiResult.FAILURE();
+    }
+
+    @RequestMapping("/verify")
+    @ApiOperation("活动状态验证")
+    @MustLogin
+    public ApiResult verify(@RequestParam @ApiParam(value = "活动id", required = true) int hdid) {
+        ThemeEntity themeEntity = themeService.findById(hdid);
+        if (themeEntity.getSffb() == 0)
+            return ApiResult.FAILURE("活动未开启");
+        else if (themeEntity.getSffb() == 2)
+            return ApiResult.FAILURE("活动已结束");
+        if (themeEntity.getKssj().after(new Date()))
+            return ApiResult.FAILURE("活动未开始");
+        if (themeEntity.getJssj().before(new Date())) {
+            themeEntity.setSffb(2);
+            themeService.save(themeEntity);
+            return ApiResult.FAILURE("活动已结束");
+        }
+        if (themeEntity.getHdlx() == 0) {
+            return ApiResult.SUCCESS();
+        } else {
+            return ApiResult.SUCCESS();
+        }
     }
 }

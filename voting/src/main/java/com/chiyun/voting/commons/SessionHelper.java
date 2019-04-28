@@ -44,7 +44,7 @@ public class SessionHelper {
         try {
             return JWTUtil.getUId(getToken());
         } catch (Exception e) {
-            return null;
+            return 0;
         }
     }
 
@@ -52,7 +52,7 @@ public class SessionHelper {
         try {
             return JWTUtil.getRole(getToken());
         } catch (Exception e) {
-            return null;
+            return 0;
         }
 
     }

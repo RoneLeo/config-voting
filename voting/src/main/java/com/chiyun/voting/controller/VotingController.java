@@ -3,6 +3,9 @@ package com.chiyun.voting.controller;
 import com.alibaba.fastjson.JSON;
 import com.chiyun.voting.commons.ApiResult;
 import com.chiyun.voting.commons.MustLogin;
+import com.chiyun.voting.commons.SessionHelper;
+import com.chiyun.voting.entity.ThemeEntity;
+import com.chiyun.voting.entity.VotingEntity;
 import com.chiyun.voting.entity.VotingquestionEntity;
 import com.chiyun.voting.entity.VotingquestionoptionsEntity;
 import com.chiyun.voting.service.ThemeServiceImpl;
@@ -13,6 +16,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Api("投票类型活动管理")
@@ -125,5 +129,46 @@ public class VotingController {
             return result;
         votingService.deleteVQO(votingquestionoptionsEntity.getId());
         return ApiResult.SUCCESS();
+    }
+
+    @PostMapping("/vote")
+    @ApiOperation("投票")
+    @MustLogin
+    public ApiResult vote(@RequestBody List<VotingEntity> list) {
+        if (list == null || list.isEmpty())
+            return ApiResult.FAILURE("没有投票信息");
+        ThemeEntity themeEntity = themeService.findByVoteId(list.get(0).getQid());
+        if (themeEntity.getSffb() == 0)
+            return ApiResult.FAILURE("投票活动未开启");
+        else if (themeEntity.getSffb() == 2)
+            return ApiResult.FAILURE("投票活动已结束");
+        if (themeEntity.getJssj().before(new Date())) {
+            themeEntity.setSffb(2);
+            themeService.save(themeEntity);
+            return ApiResult.FAILURE("投票活动已结束");
+        }
+        if (votingService.hasVote(themeEntity.getId(), SessionHelper.getuid()) > 0)
+            return ApiResult.FAILURE("已参与过投票");
+        try {
+            votingService.vote(list);
+            return ApiResult.SUCCESS();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ApiResult.FAILURE("投票失败");
+        }
+    }
+
+    @PostMapping("/findAllQtByQid")
+    @ApiOperation("查询一个题目中的其他")
+    @MustLogin
+    public ApiResult findAllQtByQid(@RequestParam @ApiParam(value = "投票题目id", required = true) int id) {
+        return ApiResult.SUCCESS(votingService.findQtByQid(id));
+    }
+
+    @PostMapping("/findAllQtByQid")
+    @ApiOperation("查询一个题目中的其他")
+    @MustLogin
+    public ApiResult getResult(@RequestParam @ApiParam(value = "投票题目id", required = true) int id) {
+        return ApiResult.SUCCESS(votingService.findQtByQid(id));
     }
 }

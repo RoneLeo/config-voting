@@ -164,4 +164,12 @@ public class ScoreController {
         List<Map> list = scoringQService.findAllByPidAndQid(SessionHelper.getuid(), id);
         return ApiResult.SUCCESS(list);
     }
+
+    @MustLogin
+    @ApiOperation("根据打分对象id获取对象得分情况")
+    @RequestMapping("/getResultByQid")
+    public ApiResult getResultByQid(@RequestParam @ApiParam(value = "打分对象id", required = true) int id) {
+        List<Map> list = scoringQService.getResultByQid(id);
+        return ApiResult.SUCCESS(list);
+    }
 }

@@ -104,4 +104,8 @@ public class ScoringServiceImpl {
     public List<Map> findAllByPidAndQid(int pid, int qid) {
         return scoringRepository.findAllByPidAndQid(pid, qid);
     }
+
+    public List<Map> getResultByQid(int qid) {
+        return scoringRepository.getResultByQid(qid);
+    }
 }

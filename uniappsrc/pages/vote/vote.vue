@@ -6,8 +6,9 @@
 		</cu-custom>
 
 		<view class="vote-wrapper padding">
+			<image v-show="activity.sffb == '2'" src="../../static/img/end.png" mode="" style="width: 150upx; height: 150upx;position: absolute; left: 480upx; top: 140upx;"></image>
 			<view class="vote-tt title" style="font-size: 18px;">
-				{{activity.bt}}<view v-show="activity.tpzt == '1'" class='cu-tag line-orange radius' style="margin-left: 20upx;">已完成投票</view>
+				{{activity.bt}}<view v-show="activity.tpzt == '1' || saved" class='cu-tag line-orange radius' style="margin-left: 20upx;">已完成投票</view>
 			</view>
 			<view class="vote-tt" style="margin-top: 40upx;">
 				活动状态：<text class="vote-subtt">{{activity.sffb== '0' ? '尚未发布' : (activity.sffb== '1' ? '已发布' : '活动已结束')}}</text>
@@ -76,28 +77,27 @@
 						{{current}} / {{activity.votelist && activity.votelist.length}}</text>
 					<button class="cu-btn bg-blue" @tap="nextOne">下一题</button>
 				</view>
-
-				<view v-show="user.js == '1' && activity.sffb == '0'" class="padding-sm" style="margin-top: 50upx;text-align: center;">
-					<button class="cu-btn bg-blue" @tap="createCode" style="margin-top: 60upx;">发布本次活动并生成二维码</button>
-				</view>
-
-				<view v-show="user.js == '1' && activity.sffb == '1' && curTime > strTime &&  curTime < endTime" class="padding-sm" style="text-align: center;">
-					<button class="cu-btn bg-blue" @tap="updateFbzt(2)">提前结束活动</button>
-				</view>
-				<!-- v-show="activity.sffb=='1' && curTime > strTime && curTime < endTime" -->
-				<view v-show="activity.tpzt == '0' && activity.sffb=='1' && curTime > strTime && curTime < endTime" style="text-align: center;">
-					<button class="cu-btn bg-blue shadow-blur" @tap="saveRes">保存我的投票</button>
-				</view>
-				<view v-show="user.js == '1' && activity.sffb == '1'" class="padding-sm" style="text-align: center;">
-					<button class="cu-btn bg-blue" @tap="gotoCodePage">查看活动二维码</button>
+				<view style="margin-top: 50upx;">
+					<view v-show="user.js == '1' && activity.sffb == '0'" class="padding-sm" style="text-align: center;">
+						<button class="cu-btn bg-blue" @tap="createCode" style="margin-top: 60upx;">发布本次活动并生成二维码</button>
+					</view>
+					
+					<view v-show="user.js == '1' && activity.sffb == '1' && curTime > strTime &&  curTime < endTime" class="padding-sm" style="text-align: center;">
+						<button class="cu-btn bg-blue" @tap="updateFbzt(2)">提前结束活动</button>
+					</view>
+					<!-- v-show="activity.sffb=='1' && curTime > strTime && curTime < endTime" -->
+					<view v-show="activity.tpzt == '0' && activity.sffb=='1' && curTime > strTime && curTime < endTime && !saved" style="text-align: center;">
+						<button class="cu-btn bg-blue shadow-blur" @tap="saveRes">保存我的投票</button>
+					</view>
+					<view v-show="user.js == '1' && activity.sffb == '1'" class="padding-sm" style="text-align: center;">
+						<button class="cu-btn bg-blue" @tap="gotoCodePage">查看活动二维码</button>
+					</view>
 				</view>
 			</view>
 
-			<view v-show="activity.sffb == '2'" class="padding">
-				活动已结束
-				<image src="../../static/end.png" mode="" style="width: 150upx; height: 150upx;"></image>
+			<view v-show="activity.sffb == '2'" class="padding" style="margin-top: 50upx;">
 				<view class="padding-sm" style="text-align: center;">
-					<button class="cu-btn bg-blue" @tap="createCode">查看活动统计结果</button>
+					<button class="cu-btn bg-blue" @tap="gotoCountPage">查看活动统计结果</button>
 				</view>
 			</view>
 
@@ -121,6 +121,7 @@
 				endTime: '',
 				res: [],
 				inputRes: [],
+				saved: false
 			};
 		},
 		mounted() {
@@ -196,6 +197,11 @@
 					}
 				})
 			},
+			gotoCountPage() {
+				uni.navigateTo({
+					url: '../../pages/voteCount/voteCount?hdid=' + this.hdid
+				})
+			},
 			gotoCodePage() {
 				uni.navigateTo({
 					url: '../../pages/code/code?lx=vote&id=' + this.hdid + '&title=' + this.activity.bt +
@@ -203,9 +209,13 @@
 				})
 			},
 			getData() {
+				uni.showLoading({
+					title: '加载中'
+				});
 				this.$api.post('/theme/findAllInfoById', {
 					id: this.hdid
 				}).then(res => {
+					uni.hideLoading()
 					if (res.resCode == 200) {
 						this.activity = res.data;
 						this.res = new Array(this.activity.votelist.length);
@@ -223,6 +233,7 @@
 							title: '操作成功！',
 							icon: 'none'
 						})
+						uni.navigateBack()
 					}else {
 						uni.showToast({
 							title: '操作失败！',
@@ -235,6 +246,7 @@
 				let len = this.activity.votelist.length;
 				
 				if(this.activity.votelist[len - 1].tplx == '2' ){  //多选题 
+				if(this.activity.votelist[len - 1].zxs) {
 					if(this.res[len - 1].length >= this.activity.votelist[len - 1].zxs && this.res[len - 1].length <= this.activity.votelist[len - 1].zds) {
 						
 					}else {
@@ -244,6 +256,8 @@
 						})
 						return ;
 					}
+				}
+					
 				}
 				let postData = [];
 				for (let i = 0, len = this.res.length; i < len; i++) {
@@ -264,6 +278,7 @@
 							title:'保存成功！',
 							icon: 'none'
 						})
+						this.saved = true;
 						uni.navigateBack()
 					}else {
 						uni.showToast({
@@ -311,14 +326,26 @@
 				if (this.current > 1) {
 					this.current--;
 				}
-				// 				var num = this.currentItem.replace(/[^0-9]/ig, "");
-				// 				this.currentItem = 'item' + (parseInt(num) - 1)
 			},
 			nextOne() {
 				let index = this.current - 1;
 				if (this.current < this.activity.votelist.length) {
 					if(this.activity.votelist[index].tplx == '2' ){  //多选题 
-						if(this.res[index].length >= this.activity.votelist[index].zxs && this.res[index].length <= this.activity.votelist[index].zds) {
+						if(this.activity.votelist[index].zxs) {
+							if(this.res[index] && this.res[index].length && this.res[index].length >= this.activity.votelist[index].zxs && this.res[index].length <= this.activity.votelist[index].zds) {
+								this.current++;
+							}else {
+								uni.showToast({
+									title: '请确认你的选择是否符合题目要求',
+									icon: 'none'
+								})
+							}
+						}else {
+							this.current++;
+						}
+						
+					}else {
+						if(this.res[index] && this.res[index].length && this.res[index].length == 1) {
 							this.current++;
 						}else {
 							uni.showToast({
@@ -326,8 +353,7 @@
 								icon: 'none'
 							})
 						}
-					}else {
-						this.current++;
+						// this.current++;
 					}
 				}
 			},
@@ -353,7 +379,7 @@
 <style lang="scss">
 	.vote-wrapper {
 		padding: 20px 30upx;
-
+		position: relative;
 		.vote-tt {
 			font-size: 14px;
 			color: #333;

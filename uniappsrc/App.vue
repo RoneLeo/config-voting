@@ -103,4 +103,8 @@
 	.dash-btn {
 		border: 1px dashed #ccc; border-radius: 10upx;height: 60upx;display: flex;align-items: center;font-size: 18px;
 	}
+	.input-wrapper {
+		border: 1px solid #ededed;border-radius: 10upx;
+		padding: 5upx 0;
+	}
 </style>

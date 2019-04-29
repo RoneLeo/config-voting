@@ -2,7 +2,7 @@
 	<view class="page">
 		<login></login>
 		<view v-show="addBtnShow" class="opt-btn shadow-blur bg-blue" @tap="gotoUser" style="position:fixed; left: 650upx; bottom: 50upx;">
-			<image src="../../static/img/user-white.png" mode="" style="width: 40upx;height: 40upx;"></image>
+			<image src="../../static/img/addUser.png" mode="" style="width: 40upx;height: 40upx;"></image>
 		</view>
 		<view v-show="addBtnShow" class="opt-btn shadow-blur bg-blue" @tap="addBtnShowChange" style="">
 			+
@@ -103,7 +103,7 @@
 				<template v-for="(item, index) in ywcList">
 					<view class="cu-time">{{item.jssj.substring(5, 11)}}</view>
 					<view class="cu-item" :class="index%2?'text-cyan':'text-blue'">
-						<view class="content shadow-blur" :class="index%2?'bg-cyan':'bg-blue'" @tap="goToPage(index)">
+						<view class="content shadow-blur" :class="index%2?'bg-cyan':'bg-blue'" @tap="goToCountPage(ywcList, index)">
 							<view class="cu-tag bg-white light radius" :class="index%2?'text-cyan':'text-blue'">{{item.hdlx == '0' ? '投票活动' : '评分活动'}}</view>
 							【{{item.bt}}】
 							<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
@@ -190,6 +190,17 @@
 			goToActivityPage(index) {
 
 			},
+			goToCountPage(data, index) {
+				if (data[index].hdlx) { //hdlx: 0 投票， 1 打分
+					uni.navigateTo({
+						url: '../../pages/markCount/markCount?hdid=' + data[index].id
+					})
+				} else {
+					uni.navigateTo({
+						url: '../../pages/voteCount/voteCount?hdid=' + data[index].id
+					})
+				}
+			},
 			gotoPage(data, index) {
 				if (data[index].hdlx) { //hdlx: 0 投票， 1 打分
 					uni.navigateTo({
@@ -202,7 +213,11 @@
 				}
 			},
 			getData() {
+				uni.showLoading({
+					title: '加载中'
+				});
 				this.$api.post('/theme/findAll').then(res => {
+					uni.hideLoading()
 					if (res.resCode == 200) {
 						this.wfbList = res.data.wfb;
 						this.yfbList = res.data.yfb;

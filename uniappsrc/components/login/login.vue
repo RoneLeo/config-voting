@@ -46,14 +46,16 @@
 					},
 					success: (res) => {
 						console.log(res)
-						// console.log(res.data);
 						let data = res.data.data;
-						this.$store.commit('setLogin', true)
-						uni.setStorageSync("userInfo", JSON.parse(JSON.stringify(data.user)));
-						uni.setStorageSync("token", JSON.parse(JSON.stringify(data.accessToken)));
-						setTimeout(() => {
-							this.loginFormShow = false;
-						}, 500)
+						if(res.data.resCode == 200) {
+							this.$store.commit('setLogin', true)
+							uni.setStorageSync("userInfo", JSON.parse(JSON.stringify(data.user)));
+							uni.setStorageSync("token", JSON.parse(JSON.stringify(data.accessToken)));
+							setTimeout(() => {
+								this.loginFormShow = false;
+							}, 500)
+						}
+						
 					}
 				});
 

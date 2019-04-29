@@ -183,12 +183,12 @@
 		},
 		onLoad(params) {
 			this.paramsHdid = params.hdid;
-			if(this.paramsHdid || this.activityForm.id) {
+			if (this.paramsHdid || this.activityForm.id) {
 				this.getData();
 			}
 		},
 		onShow() {
-			if(this.paramsHdid || this.activityForm.id) {
+			if (this.paramsHdid || this.activityForm.id) {
 				this.getData();
 			}
 		},
@@ -207,8 +207,9 @@
 			createCode() {
 				console.log(this.paramsHdid || this.activityForm.id)
 				uni.navigateTo({
-					url:'../../pages/code/code?lx=mark&id=' + (this.paramsHdid || this.activityForm.id) + '&title=' + this.activityForm.bt
-						+ '&kssj=' + this.activityForm.kssj + '&jssj=' + this.activityForm.jssj
+					url: '../../pages/code/code?lx=mark&id=' + (this.paramsHdid || this.activityForm.id) + '&title=' + this.activityForm
+						.bt +
+						'&kssj=' + this.activityForm.kssj + '&jssj=' + this.activityForm.jssj
 				})
 			},
 			hideErrorModal() {
@@ -255,17 +256,21 @@
 				})
 			},
 			getData(id) {
-					this.$api.post('/theme/findAllInfoById', {
-						id: id || this.paramsHdid || this.activityForm.id
-					}).then((res) => {
-						if (res.resCode == 200) {
-							this.activityForm = res.data;
-							this.activityForm.kssj = this.activityForm.kssj && this.activityForm.kssj.substring(0, 11);
-							this.activityForm.jssj = this.activityForm.jssj && this.activityForm.jssj.substring(0, 11);
-							this.cpdxs = this.activityForm.scorelist || [];
-							this.newOptions = this.activityForm.scoreoblist || [];
-						}
-					})
+				uni.showLoading({
+					title: '加载中'
+				});
+				this.$api.post('/theme/findAllInfoById', {
+					id: id || this.paramsHdid || this.activityForm.id
+				}).then((res) => {
+					uni.hideLoading()
+					if (res.resCode == 200) {
+						this.activityForm = res.data;
+						this.activityForm.kssj = this.activityForm.kssj && this.activityForm.kssj.substring(0, 11);
+						this.activityForm.jssj = this.activityForm.jssj && this.activityForm.jssj.substring(0, 11);
+						this.cpdxs = this.activityForm.scorelist || [];
+						this.newOptions = this.activityForm.scoreoblist || [];
+					}
+				})
 			},
 			saveObj() {
 				console.log(this.cpdxs)
@@ -291,17 +296,40 @@
 			},
 			saveTheme() {
 				console.log(JSON.parse(JSON.stringify(this.activityForm)));
-				for (let key in this.activityForm) {
-					if (key != 'votelist' && key != 'scoreoblist' && key != 'scorelist') {
-						if (this.activityForm[key] === '' || this.activityForm[key] === null) {
-							this.modalShow = true;
-							this.modalContent = '请完成所有设置选项。';
+				let postData = {
+					id: this.activityForm.id ? this.activityForm.id : null,
+					bt: this.activityForm.bt,
+					nr: this.activityForm.nr,
+					hdlx: this.activityForm.hdlx,
+					sffb: this.activityForm.sffb,
+					kssj: this.activityForm.kssj,
+					jssj: this.activityForm.jssj
+				}
+				for (let key in postData) {
+					if (key != 'nr') {
+						if (postData[key] === '' || postData[key] === null) {
+							console.log(key, postData[key])
+							this.errorModalShow = true;
+							// this.modalContent = '请完成所有设置选项。';
 						}
 					}
 				}
-				let url = this.activityForm.id ? '/theme/update' : '/theme/add';
+				let url = '/theme/add';
+				if (this.activityForm.id) {
+					url = '/theme/update';
+					postData.id = this.activityForm.id;
+				}
+				// 				for (let key in this.activityForm) {
+				// 					if (key != 'votelist' && key != 'scoreoblist' && key != 'scorelist') {
+				// 						if (this.activityForm[key] === '' || this.activityForm[key] === null) {
+				// 							this.modalShow = true;
+				// 							this.modalContent = '请完成所有设置选项。';
+				// 						}
+				// 					}
+				// 				}
+				// 				let url = this.activityForm.id ? '/theme/update' : '/theme/add';
 
-				this.$api.post(url, Object.assign({}, this.activityForm)).then(res => {
+				this.$api.post(url, Object.assign({}, postData)).then(res => {
 					if (res.resCode == 200) {
 						this.getData(res.data.id);
 						uni.showToast({

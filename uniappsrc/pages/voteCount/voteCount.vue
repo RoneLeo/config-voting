@@ -2,89 +2,56 @@
 	<view class="page">
 		<login></login>
 		<cu-custom v-show="isBack" bgColor="bg-blue" :isBack="isBack">
-			<block slot="content" style="width: calc(100% - 100px);">2019九室爱岗敬业选举</block>
+			<block slot="content" style="width: calc(100% - 100px);">{{hdData.bt}}</block>
 		</cu-custom>
 		<view class="vote-wrapper padding-xl">
 			<view class="vote-tt title" style="font-size: 18px;">
-				2019九室爱岗敬业选举统计结果
+				{{hdData.bt}} - 统计结果
 			</view>
-			<view class="vote-tt" style="margin-top: 40upx;">
-				投票期限：<text class="vote-subtt">2019-01-02 至 2019-02-01</text>
+			<view class="vote-tt" style="margin-top: 20upx;">
+				评分期限：<text class="vote-subtt">{{hdData.kssj && hdData.kssj.substring(0, 11)}} 至 {{hdData.kssj && hdData.jssj.substring(0, 11)}}</text>
 			</view>
 
 			<view class="">
-				<view class="ques-item">
+				<view class="ques-item" v-for="(res, index) in result">
 					<view class="ques-tt">
-						1.下面的几个人中，你觉得谁最应该获得此荣誉？
+						{{index + 1}}.{{res.vote.bt}}
 					</view>
 					<view class="">
-						<view class="ques-td">
-							<text class="opt-name">lucy（50票）</text>
-							<view class="cu-progress round sm striped">
-								<view class="bg-red" :style="[{ width:percent? percent:''}]">{{percent}} </view>
+						<view class="ques-td" v-for="(opt, optIndex) in res.result">
+							<text v-show="opt.xxlx == '1' || opt.xxlx == '3' || opt.xxlx == '4'" class="opt-name">{{opt.xxmc}}（{{opt.sl}}票）
+								<text v-show="opt.xxlx == '4' && opt.sl" @tap="lookDetail(res.vote.bt, opt.dxid)" class='cu-tag line-blue radius' style="margin-left: 20upx;border-color: transparant;">查看</text>
+								<!-- <text   style="display: inline-block;border: 1px solid #ededed;padding: 0 10upx;border-radius">查看</text> -->
+							</text>
+							<view v-show="opt.xxlx == '2'" class="opt-name" style="width: 200upx height: 150upx;">
+								<image :src="opt.xxmc" mode="" style="width: 180upx; height: 150upx;margin-right: 20upx;"></image> ({{opt.sl}}票)
 							</view>
-						</view>
-						<view class="ques-td">
-							<text class="opt-name">王小二（50票）</text>
-							<view class="cu-progress round sm striped">
-								<view class="bg-green" :style="[{ width:percent? percent:''}]">{{percent}}</view>
+							<view v-show="opt.xxlx == '1' || opt.xxlx == '3' || opt.xxlx == '4'" class="cu-progress round sm striped">
+								<view :class="'bg-' + (colorList[Math.floor(Math.random()*5)])" :style="[{ width: (opt.sl/res.num) * 100 ? (opt.sl/res.num) * 100+'%' :''}]">{{(opt.sl/res.num) * 100}}% </view>
 							</view>
-						</view>
-						<view class="ques-td">
-							<text class="opt-name">易烊千玺（500票）</text>
-							<view class="cu-progress round sm striped">
-								<view class="bg-blue" :style="[{ width:percent? percent:''}]">{{percent}}</view>
-							</view>
-						</view>
-					</view>
-				</view>
-				<view class="ques-item">
-					<view class="ques-tt">
-						2.下面的几个人中，你觉得谁最爱岗敬业？
-					</view>
-					<view class="">
-						<view class="ques-td">
-							<text class="opt-name">麦当劳（50票）</text>
-							<view class="cu-progress round sm striped">
-								<view class="bg-red" :style="[{ width:percent? percent:''}]">{{percent}} </view>
-							</view>
-						</view>
-						<view class="ques-td">
-							<text class="opt-name">肯德基（50票）</text>
-							<view class="cu-progress round sm striped">
-								<view class="bg-green" :style="[{ width:percent? percent:''}]">{{percent}}</view>
-							</view>
-						</view>
-						<view class="ques-td">
-							<text class="opt-name">必胜客（500票）</text>
-							<view class="cu-progress round sm striped">
-								<view class="bg-blue" :style="[{ width:percent? percent:''}]">{{percent}}</view>
-							</view>
-						</view>
-					</view>
-				</view>
-				<view class="ques-item">
-					<view class="ques-tt">
-						3.你觉得爱岗敬业的庆祝活动应该在哪里举行呢， 为什么呢？
-					</view>
-					<view class="">
-						<view class="ques-td">
-							<text class="opt-name"> 【Lucy】我觉得巴拉巴拉巴拉巴拉。然后沙和尚啥啥啥啥啥的。</text>
-						</view>
-						<view class="ques-td">
-							<text class="opt-name"> 【黄中国】我觉得巴拉巴拉巴拉巴拉。然后沙和尚啥啥啥啥啥的。</text>
-						</view>
-						<view class="ques-td">
-							<text class="opt-name"> 【黄中国】巴黎。浪漫。</text>
 						</view>
 					</view>
 				</view>
 			</view>
 
 		</view>
-
-		<view style="margin-top: 50upx;text-align: center;">
-			<button class="cu-btn bg-blue shadow-blur">分享投票统计结果</button>
+		
+		<view class="cu-modal" :class="modalShow?'show':''">
+			<view class="cu-dialog">
+				<view class="cu-bar bg-white justify-end">
+					<view class="content">{{name}}</view>
+					<view class="action" @tap="modalHide">
+						
+						<text class="cuIcon-close text-red"></text>
+					</view>
+				</view>
+				<view class="padding-xl">
+					<view v-show="item.bz" class="modal-item" v-for="(item, index) in modalData">
+						{{item.bz}}
+					</view>
+					
+				</view>
+			</view>
 		</view>
 
 	</view>
@@ -95,29 +62,91 @@
 		data() {
 			return {
 				isBack: false,
+				hdData: {},
+				result: [],
 				percent: '48%',
 				colorList: [
-					'#e54d42',
-					'#f37b1d',
-					'#fbbd08',
-					'#8dc63f',
-					'#39b54a',
-					'#1cbbb4',
-					'#0081ff',
-					'#6739b6',
-					'#9c26b0',
-					'#e03997',
-					'#a5673f',
-					'#8799a3',
-					'#aaaaaa',
-					'#333333',
-					'#ffffff'
-				]
+					'orange', 'green', 'red', 'blue', 'purple', 'pink'
+				],
+				modalShow: false,
+				name: '',
+				modalData: []
 			};
 		},
-		onLoad() {
+		computed: {
+			logined() {
+				return this.$store.state.logined
+			}
+		},
+		watch: {
+			logined: {
+				handler(newVal, oldVal) {
+					this.user = this.getGlobalUser() || {};
+					if (newVal && this.hdid) {
+						this.getData();
+					}
+				},
+				immediate: true
+			}
+		},
+		onShow() {
+			if (this.logined && this.hdid) {
+				this.getData();
+			}
+		},
+		onLoad(params) {
+			this.hdid = params.hdid;
 			if (getCurrentPages().length > 1) {
 				this.isBack = true;
+			}
+			if (this.logined && this.hdid) {
+				this.getData();
+			}
+		},
+		methods:{
+			lookDetail(name, id) {
+				this.$api.post('/voting/findAllQtByQid', {id: id}).then(res => {
+					if(res.resCode == 200) {
+						this.name = name;
+						this.modalShow = true;
+						this.modalData = res.data;
+						console.log(this.modalData )
+					}else {
+						uni.showToast({
+							title: "获取数据失败！",
+							icon: 'none'
+						})
+					}
+				})
+			},
+			modalHide() {
+				this.modalShow = false;
+			},
+			getData() {
+				uni.showLoading({
+					title: '加载中'
+				});
+				this.$api.post('/theme/getResult', {
+					hdid: this.hdid
+				}).then(res => {
+					uni.hideLoading()
+					if (res.resCode == 200) {
+						this.hdData = res.data.hddata;
+						this.result = res.data.result;
+						for(let i = 0; i < this.result.length; i ++) {
+							let num = 0;
+							for(let j = 0, len = this.result[i].result.length; j < len; j ++) {
+								if(this.result[i].result[j].sl == 0) {
+									break;
+								}else {
+									num += this.result[i].result[j].sl;
+								}
+							}
+							this.result[i].num = num;
+							// console.log(this.result[i].num)
+						}
+					}
+				})
 			}
 		}
 	}
@@ -143,5 +172,13 @@
 				line-height: 2;
 			}
 		}
+	}
+	.modal-item {
+		border: 1px solid #cdcdcd;
+		border-radius: 10upx;
+		padding: 10upx 20upx;
+		line-height: 2;
+		margin: 20upx;
+		font-size: 14px;
 	}
 </style>

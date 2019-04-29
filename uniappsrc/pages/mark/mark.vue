@@ -13,7 +13,7 @@
 				活动状态：<text class="vote-subtt">{{activity.sffb== '0' ? '尚未发布' : (activity.sffb== '1' ? '已发布' : '活动已结束')}}</text>
 			</view>
 			<view class="vote-tt">
-				活动期限：<text class="vote-subtt">{{activity.kssj && activity.kssj.substring(0,11)}} 至 {{activity.kssj && activity.kssj.substring(0,11)}}</text>
+				活动期限：<text class="vote-subtt">{{activity.kssj && activity.kssj.substring(0,11)}} 至 {{activity.jssj && activity.jssj.substring(0,11)}}</text>
 			</view>
 			<view class="vote-tt">
 				活动说明：<text class="vote-subtt">{{activity.nr}}</text>
@@ -47,7 +47,7 @@
 				活动已结束
 				<image src="../../static/end.png" mode="" style="width: 150upx; height: 150upx;"></image>
 				<view class="padding-sm" style="text-align: center;">
-					<button class="cu-btn bg-blue" @tap="createCode">查看活动统计结果</button>
+					<button class="cu-btn bg-blue" @tap="gotoCountPage">查看活动统计结果</button>
 				</view>
 			</view>
 
@@ -103,10 +103,19 @@
 			}
 		},
 		methods: {
+			gotoCountPage() {
+				uni.navigateTo({
+					url: '../../pages/markCount/markCount?hdid=' + this.hdid
+				})
+			},
 			getData() {
+				uni.showLoading({
+					title: '加载中'
+				});
 				this.$api.post('/theme/findAllInfoById', {
 					id: this.hdid
 				}).then(res => {
+					uni.hideLoading()
 					if (res.resCode == 200) {
 						this.activity = res.data;
 						this.curTime = new Date().getTime(); 

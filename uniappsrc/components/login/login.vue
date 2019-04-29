@@ -54,6 +54,12 @@
 							setTimeout(() => {
 								this.loginFormShow = false;
 							}, 500)
+						}else {
+							console.log(111)
+							uni.showToast({
+								title: res.data.resMsg,
+								icon: 'none'
+							})
 						}
 						
 					}
@@ -67,7 +73,7 @@
 <style lang="scss">
 	.login_mask {
 		background-color: rgba(0, 0, 0, .6);
-		z-index: 2000;
+		z-index: 901;
 		display: flex;
 		justify-content: center;
 		align-items: center;

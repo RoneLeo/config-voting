@@ -12,7 +12,7 @@
 			<button class="cu-btn shadow-blur bg-blue" style="margin-left: 30upx;" @tap="gotoMark">打分类</button>
 			<button class="cu-btn shadow-blur bg-blue" style="margin-left: 30upx;" @tap="addBtnShowChange">x</button>
 		</view>
-		<view class="cu-bar search bg-white" style="position: fixed; width: 750upx; top: 0; left: 0;z-index: 1000;">
+		<view class="cu-bar search bg-white" style="position: fixed; width: 750upx; top: 0; left: 0;z-index: 900;">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
 				<input @focus="InputFocus" @blur="InputBlur" :adjust-position="false" type="text" placeholder="搜索投票、打分活动等"

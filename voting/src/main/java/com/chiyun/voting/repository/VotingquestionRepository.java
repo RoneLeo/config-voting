@@ -17,7 +17,7 @@ public interface VotingquestionRepository extends JpaRepository<VotingquestionEn
 
     List<VotingquestionEntity> findAllByHdid(int hdid);
 
-    @Query(value = "select id,title bt from votingquestion where themeid = ?1 ", nativeQuery = true)
+    @Query(value = "select a.*, sl from (select id,title bt from votingquestion where themeid = ?1)a left join (select qid,count(*) sl from(select qid,pid from voting group by pid, qid)a group by qid)b on qid=id\n ", nativeQuery = true)
     List<Map> findAllIdByHdid(int hdid);
 
     @Query(value = "select count(*) from votingquestion,voting where themeid = ?1 and qid = id and pid = ?2", nativeQuery = true)

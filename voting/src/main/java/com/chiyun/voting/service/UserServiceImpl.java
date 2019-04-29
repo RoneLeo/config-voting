@@ -11,8 +11,8 @@ public class UserServiceImpl {
     @Resource
     private UserRepository userRepository;
 
-    public UserEntity findOneByZhAndMm(String zh, String mm) {
-        return userRepository.findFirstByZhAndMm(zh, mm);
+    public UserEntity findFirstByZh(String zh) {
+        return userRepository.findFirstByZh(zh);
     }
 
     public UserEntity save(UserEntity userEntity) {

@@ -33,9 +33,11 @@ public class UserController {
             e.printStackTrace();
             return ApiResult.FAILURE("请确认密码是否无误");
         }
-        UserEntity userEntity = userService.findOneByZhAndMm(zh, mm);
+        UserEntity userEntity = userService.findFirstByZh(zh);
         if (userEntity == null)
-            return ApiResult.FAILURE("");
+            return ApiResult.FAILURE("不存在该账号用户");
+        if (!userEntity.getMm().equals(mm))
+            return ApiResult.FAILURE("密码不正确");
         String token = JWTUtil.sign(userEntity.getMc(), userEntity.getId(), userEntity.getJs());
         Map<String, Object> result = new HashMap<>();
         result.put("user", userEntity);

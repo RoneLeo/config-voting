@@ -6,5 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     UserEntity findFirstByZhAndMm(String zh, String mm);
 
+    UserEntity findFirstByZh(String zh);
+
     boolean existsByZh(String zh);
 }

@@ -128,7 +128,7 @@ public class ThemeController {
 
     @RequestMapping("/getResult")
     @ApiOperation("获取活动结果")
-//    @MustLogin
+    @MustLogin
     public ApiResult getResult(@RequestParam @ApiParam(value = "活动id", required = true) int hdid) {
         ThemeEntity themeEntity = themeService.findById(hdid);
         if (themeEntity.getSffb() == 0) {

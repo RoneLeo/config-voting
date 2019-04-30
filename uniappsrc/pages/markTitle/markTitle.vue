@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<login></login>
+		<login :loginFormShow="loginFormShow" @hide="loginHide"></login>
 		<cu-custom v-show="isBack" bgColor="bg-blue" :isBack="isBack">
 			<block slot="content" style="width: calc(100% - 100px);">{{activity && activity.bt}}</block>
 		</cu-custom>
@@ -59,39 +59,19 @@
 	export default {
 		data() {
 			return {
+				loginFormShow: false,
 				hdid: null,
 				obid: null,
 				isBack: false,
 				rangeValues: [], //当前区间值
-				slideMin: 30, //slider最小值
-				slideMax: 60, //slider最大值
+				// slideMin: 30, //slider最小值
+				// slideMax: 60, //slider最大值
 				scores: [],
 				activity:{},
 				obj: {},
 				curTime: '',
 				strTime: '',
 				endTime: '',
-				data: [{
-						name: '专业能力专业能力专业能力',
-						min: 0,
-						max: 100,
-					},
-					{
-						name: '协调能力',
-						min: 10,
-						max: 100
-					},
-					{
-						name: '管理能力',
-						min: 40,
-						max: 100
-					},
-					{
-						name: '应变能力',
-						min: 60,
-						max: 100
-					}
-				]
 			};
 		},
 		mounted() {
@@ -101,20 +81,26 @@
 			this.hdid = params.hdid;
 			this.obid = params.obid;
 			this.user = this.getGlobalUser() || {};
-			if(this.hdid && this.obid) {
-				this.getData();
-			}
 			if (getCurrentPages().length > 1) {
 				this.isBack = true;
+			}
+			if(!this.getLogined()) {
+				this.loginFormShow = true;
 			}
 		},
 		onShow() {
 			this.user = this.getGlobalUser() || {};
-			if(this.hdid && this.obid) {
+			if(this.getLogined() && this.hdid && this.obid) {
 				this.getData();
 			}
 		},
 		methods: {
+			loginHide() {
+				this.loginFormShow = false;
+				if (this.getLogined() && this.hdid && this.obid) {
+					this.getData();
+				}
+			},
 			getData() {
 				this.$api.post('/theme/findAllInfoById', {
 					id: this.hdid
@@ -135,9 +121,11 @@
 						this.scores = [];
 						this.data.forEach(item => {
 							this.rangeValues.push([item.zdf, item.zgf]);
-							item.val = item.zdf;
+							item.val = item.zgf;
 							this.scores.push(item.zgf)
 						})
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
@@ -158,11 +146,8 @@
 							icon: 'none'
 						})
 						uni.navigateBack()
-					}else {
-						uni.showToast({
-							title: '保存失败！',
-							icon: 'none'
-						})
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 				console.log(res)

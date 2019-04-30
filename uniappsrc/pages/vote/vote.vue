@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<login></login>
+		<login :loginFormShow="loginFormShow" @hide="loginHide"></login>
 		<cu-custom v-show="isBack" bgColor="bg-blue" :isBack="isBack">
 			<block slot="content" style="width: calc(100% - 100px);">{{activity && activity.bt}}</block>
 		</cu-custom>
@@ -25,10 +25,10 @@
 					<view class="scroll-view-item" v-show="current == (index + 1)" :id="'item' + (index + 1)" v-for="(vote, index) in activity.votelist" >
 						<view class="item-block">
 							<view class="item-tt">
-								<view class='cu-tag radius bg-blue' style="margin-right: 20upx;">{{myJson.vote[vote.tplx]}}</view>
-								{{vote.bt}}
-								<text v-show="vote.tplx=='2'">
-									（选择{{vote.zxs}}~{{vote.zds}}）
+								<!-- <view class='cu-tag radius line-blue' style="margin-right: 20upx;">{{myJson.vote[vote.tplx]}}</view> -->
+								{{index + 1}}. {{vote.bt}}
+								<text>
+									（{{myJson.vote[vote.tplx]}}<text v-show="vote.tplx == '2'">，选择{{vote.zxs}}~{{vote.zds}}</text>）
 								</text>
 							</view>
 
@@ -110,6 +110,7 @@
 	export default {
 		data() {
 			return {
+				loginFormShow: false,
 				hdid: null,
 				user: {},
 				myJson: myJson,
@@ -141,30 +142,23 @@
 			if (getCurrentPages().length > 1) {
 				this.isBack = true;
 			}
-			if (this.hdid) {
-				this.getData();
+			if(!this.getLogined()) {
+				this.loginFormShow = true;
 			}
 		},
 		onShow() {
 			this.user = this.getGlobalUser() || {};
-		},
-		computed: {
-			logined() {
-				return this.$store.state.logined
-			}
-		},
-		watch: {
-			logined: {
-				handler(newVal, oldVal) {
-					this.user = this.getGlobalUser() || {};
-					if (newVal) {
-						this.getData();
-					}
-				},
-				immediate: true
+			if(this.getLogined() || this.hdid) {
+				this.getData();
 			}
 		},
 		methods: {
+			loginHide() {
+				this.loginFormShow = false;
+				if (this.getLogined() || this.hdid) {
+					this.getData();
+				}
+			},
 			inputChange(event) {
 				let {
 					index,
@@ -189,11 +183,8 @@
 							icon: 'none'
 						})
 						this.gotoCodePage();
-					} else {
-						uni.showToast({
-							title: '操作失败！',
-							icon: 'none'
-						})
+					} else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
@@ -223,6 +214,8 @@
 						this.curTime = new Date().getTime();
 						this.strTime = new Date(Date.parse(this.activity.kssj.replace(/-/g, "/"))).getTime(); // 时间戳
 						this.endTime = new Date(Date.parse(this.activity.jssj.replace(/-/g, "/"))).getTime(); // 时间戳
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
@@ -234,11 +227,8 @@
 							icon: 'none'
 						})
 						uni.navigateBack()
-					}else {
-						uni.showToast({
-							title: '操作失败！',
-							icon: 'none'
-						})
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
@@ -280,11 +270,8 @@
 						})
 						this.saved = true;
 						uni.navigateBack()
-					}else {
-						uni.showToast({
-							title:'保存失败！',
-							icon: 'none'
-						})
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},

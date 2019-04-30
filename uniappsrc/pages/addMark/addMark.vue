@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<login></login>
+		<login :loginFormShow="loginFormShow" @hide="loginHide"></login>
 		<cu-custom bgColor="bg-blue" :isBack="true">
 			<block slot="content">发起评分活动</block>
 		</cu-custom>
@@ -18,7 +18,7 @@
 
 			<view class="cu-form-group">
 				<view class="title">开始日期</view>
-				<picker mode="date" :value="activityForm.kssj" start="2015-09-01" end="2020-09-01" @change="startDateChange">
+				<picker mode="date" :value="activityForm.kssj" start="2019-01-01" end="2120-01-01" @change="startDateChange">
 					<view class="picker">
 						{{activityForm.kssj}}
 					</view>
@@ -26,7 +26,7 @@
 			</view>
 			<view class="cu-form-group">
 				<view class="title">结束日期</view>
-				<picker mode="date" :value="activityForm.jssj" start="2015-09-01" end="2020-09-01" @change="endDateChange">
+				<picker mode="date" :value="activityForm.jssj" start="2019-01-01" end="2120-01-01" @change="endDateChange">
 					<view class="picker">
 						{{activityForm.jssj}}
 					</view>
@@ -160,6 +160,7 @@
 	export default {
 		data() {
 			return {
+				loginFormShow: false,
 				activityForm: {
 					bt: '',
 					nr: '',
@@ -183,8 +184,8 @@
 		},
 		onLoad(params) {
 			this.paramsHdid = params.hdid;
-			if (this.paramsHdid || this.activityForm.id) {
-				this.getData();
+			if(!this.getLogined()) {
+				this.loginFormShow = true;
 			}
 		},
 		onShow() {
@@ -192,18 +193,13 @@
 				this.getData();
 			}
 		},
-		mounted() {
-			//#ifdef H5
-			// 			var input = document.createElement('input')
-			// 			input.type = 'file'
-			// 			input.setAttribute('id', 'fileInput');
-			// 			input.onchange = (event) => {
-			// 				console.log(event.target.files[0])
-			// 			}
-			// 			this.$refs.input1.$el.appendChild(input)
-			//#endif
-		},
 		methods: {
+			loginHide() {
+				this.loginFormShow = false;
+				if (this.paramsHdid || this.activityForm.id) {
+					this.getData();
+				}
+			},
 			createCode() {
 				console.log(this.paramsHdid || this.activityForm.id)
 				uni.navigateTo({
@@ -223,11 +219,8 @@
 							icon: 'none'
 						})
 						this.getData();
-					} else {
-						uni.showToast({
-							title: res.resMsg,
-							icon: 'none'
-						})
+					} else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
@@ -247,11 +240,8 @@
 							title: '保存成功',
 							icon: 'none'
 						})
-					} else {
-						uni.showToast({
-							title: res.resMsg,
-							icon: 'none'
-						})
+					} else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
@@ -269,11 +259,12 @@
 						this.activityForm.jssj = this.activityForm.jssj && this.activityForm.jssj.substring(0, 11);
 						this.cpdxs = this.activityForm.scorelist || [];
 						this.newOptions = this.activityForm.scoreoblist || [];
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
 			saveObj() {
-				console.log(this.cpdxs)
 				for (let i = 0, len = this.cpdxs.length; i < len; i++) {
 					this.cpdxs[i].hdid = this.paramsHdid;
 				}
@@ -283,11 +274,8 @@
 							title: '保存成功！',
 							icon: 'none'
 						})
-					} else {
-						uni.showToast({
-							title: res.resMsg,
-							icon: 'none'
-						})
+					} else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
@@ -297,7 +285,6 @@
 			saveTheme() {
 				console.log(JSON.parse(JSON.stringify(this.activityForm)));
 				let postData = {
-					id: this.activityForm.id ? this.activityForm.id : null,
 					bt: this.activityForm.bt,
 					nr: this.activityForm.nr,
 					hdlx: this.activityForm.hdlx,
@@ -319,15 +306,6 @@
 					url = '/theme/update';
 					postData.id = this.activityForm.id;
 				}
-				// 				for (let key in this.activityForm) {
-				// 					if (key != 'votelist' && key != 'scoreoblist' && key != 'scorelist') {
-				// 						if (this.activityForm[key] === '' || this.activityForm[key] === null) {
-				// 							this.modalShow = true;
-				// 							this.modalContent = '请完成所有设置选项。';
-				// 						}
-				// 					}
-				// 				}
-				// 				let url = this.activityForm.id ? '/theme/update' : '/theme/add';
 
 				this.$api.post(url, Object.assign({}, postData)).then(res => {
 					if (res.resCode == 200) {
@@ -342,11 +320,9 @@
 							icon: 'none'
 						})
 					}
-					console.log(res)
 				})
 			},
 			deleteOne(index) {
-				// this.cpdxs.splice(index, 1);
 				this.$api.post('/score/deleteScoreOneDx', this.cpdxs[index]).then(res => {
 					if (res.resCode == 200) {
 						uni.showToast({
@@ -354,11 +330,8 @@
 							icon: 'none'
 						})
 						this.getData();
-					} else {
-						uni.showToast({
-							title: res.resMsg,
-							icon: 'none'
-						})
+					} else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
@@ -375,15 +348,11 @@
 							title: '保存成功',
 							icon: 'none'
 						})
-					} else {
-						uni.showToast({
-							title: res.resMsg,
-							icon: 'none'
-						})
+					} else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 
-				// this.cpdxs.push(this.cpdx);
 			},
 			updateOne(index) {
 				this.modalOpTitle = '修改参评对象';
@@ -405,7 +374,6 @@
 			},
 			hideModal() {
 				this.modalShow = false;
-				console.log(this.cpdx)
 			},
 			saveOption() {
 				for (let i = 0, len = this.newOptions.length; i < len; i++) {
@@ -417,14 +385,10 @@
 							title: '保存成功',
 							icon: 'none'
 						})
-					} else {
-						uni.showToast({
-							title: res.resMsg,
-							icon: 'none'
-						})
+					} else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
-				console.log(this.newOptions)
 			},
 			updateOneOp(index) {
 				this.newOption = this.newOptions[index];

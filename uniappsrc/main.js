@@ -32,6 +32,14 @@ Vue.prototype.getGlobalUser = function(key) {
 		return null;
 	}
 }
+Vue.prototype.getLogined = function(key) {
+	var logined = uni.getStorageSync("logined");
+	if (logined != null && logined != "" && logined != undefined) {
+		return logined;
+	} else {
+		return null;
+	}
+}
 let getToken = function(key) {
 	var token = uni.getStorageSync("token");
 	if (token != null && token != "" && token != undefined) {

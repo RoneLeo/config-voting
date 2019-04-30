@@ -78,7 +78,6 @@ export const post = (url, data) => {
 		} else if(url.indexOf("score/addScoreDx") != -1 || url.indexOf("score/addScoreOP") != -1
 			|| url.indexOf("score/score") != -1 || url.indexOf("voting/vote") != -1){
 			config.header = {
-				// 'content-type': 'application/x-www-form-urlencoded',
 				'content-type': 'application/json',
 				'accessToken': uni.getStorageSync("token")
 			}
@@ -94,15 +93,15 @@ export const post = (url, data) => {
 		// console.log(response)
 		if (response.statusCode === 200) {
 			let data = JSON.parse(response.data)
-// 			if (data.resCode === 100 || data.resCode === 101) { //未登录或登录失败
-// 				uni.showToast({
-// 					title: '自动登录中',
-// 					icon: "none"
-// 				})
-// 				autoLogin();
-// 			} else {
-// 				return data;
-// 			}
+			if (data.resCode === 100) { //未登录或登录失败
+				uni.setStorageSync("logined", JSON.parse(JSON.stringify('false')));
+				// autoLogin();
+			}else if(data.resCode != 200) {
+				uni.showToast({
+					title: res.resMsg,
+					icon: none
+				})
+			}
 			return data;
 		} else if (response.statusCode === 500) {
 			uni.showToast({

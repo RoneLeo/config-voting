@@ -1,12 +1,15 @@
 <template>
 	<view class="page">
-		<login></login>
-		<view v-show="addBtnShow" class="opt-btn shadow-blur bg-blue" @tap="gotoUser" style="position:fixed; left: 650upx; bottom: 50upx;">
-			<image src="../../static/img/addUser.png" mode="" style="width: 40upx;height: 40upx;"></image>
+		<login :loginFormShow="loginFormShow" @hide="loginHide"></login>
+		<view v-show="addBtnShow && user.js" style="position:fixed; left: 500upx; bottom: 50upx;display: flex;width: 200upx;justify-content: space-around;z-index: 900;">
+			<view @tap="addBtnShowChange" class="opt-btn shadow-blur bg-blue">
+				+
+			</view>
+			<view @tap="gotoUser" class="opt-btn shadow-blur bg-blue">
+				<image src="../../static/img/addUser.png" mode="" style="width: 40upx;height: 40upx;"></image>
+			</view>
 		</view>
-		<view v-show="addBtnShow" class="opt-btn shadow-blur bg-blue" @tap="addBtnShowChange" style="">
-			+
-		</view>
+
 		<view v-show="!addBtnShow" class="opt-btn-grounp">
 			<button class="cu-btn shadow-blur bg-blue" style="margin-left: 30upx;" @tap="gotoVote">投票类</button>
 			<button class="cu-btn shadow-blur bg-blue" style="margin-left: 30upx;" @tap="gotoMark">打分类</button>
@@ -33,15 +36,10 @@
 			<view v-show="wfbShow" class="cu-list menu-avatar">
 				<view class="cu-item" :class="modalName=='move-box-'+ index?'move-cur':''" v-for="(wfb,index) in wfbList" :key="index"
 				 @touchstart="ListTouchStart" @touchmove="ListTouchMove" @touchend="ListTouchEnd" :data-target="'move-box-' + index">
-					<!-- <image class="cu-avatar round lg" src="../../static/img/vote3.png" mode=""></image> -->
-					<!-- <view class="cu-avatar round lg" :style="[{backgroundImage:'url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100'+ (index+2) +'.jpg)'}]"></view> -->
 					<view class="content" @tap="editOne(index)">
 						<view class="text-grey">
 							{{wfb.bt}}
 							<view class='cu-tag line-orange radius' style="margin-left: 20upx;">{{wfb.hdlx ? '评分活动' : '投票活动'}}</view>
-							<!-- <view v-show="wfb.hdlx" class='cu-tag line-orange radius' style="margin-left: 20upx;">{{wfb.scoreoblist && wfb.scoreoblist.length}}个评分对象</view> -->
-							<!-- <view v-show="wfb.hdlx" class='cu-tag line-orange radius' style="margin-left: 20upx;">{{wfb.scorelist && wfb.scorelist.length}}个评分内容</view> -->
-							<!-- <view v-show="!wfb.hdlx" class='cu-tag line-orange radius' style="margin-left: 20upx;">{{(wfb.votelist && wfb.votelist.length)|| 0}}个题目</view> -->
 						</view>
 						<view class="text-gray text-sm">
 							<text class="cuIcon-infofill text-red  margin-right-xs"></text> {{wfb.kssj.substring(0,11)}} ~
@@ -76,18 +74,6 @@
 						</view>
 					</view>
 				</template>
-
-				<!-- <view class="cu-item">
-					<view class="content">
-						<view class="cu-tag bg-green light radius">10:00</view> 【工会科室会议表决】
-					</view>
-				</view>
-				<view class="cu-item">
-					<view class="content">
-						<view class="cu-tag bg-green light radius">10:00</view>
-						<navigator url="../../pages/mark/mark?id=10">【科研组专家打分活动】</navigator>
-					</view>
-				</view> -->
 			</view>
 		</view>
 
@@ -110,34 +96,6 @@
 						</view>
 					</view>
 				</template>
-				<!-- <view class="cu-time">昨天</view>
-				<view class="cu-item text-blue">
-					<view class="content bg-blue shadow-blur">
-						<text>20:00</text>
-						<navigator url="../voteCount/voteCount">【2019XX党支部支部互评】</navigator>
-						<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
-					</view>
-					<view class="content bg-cyan shadow-blur">
-						<text>10:00</text>
-						<navigator url="../markCount/markCount"> 【开发组-专业组技术带头人打分】</navigator>
-						<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
-					</view>
-				</view>
-				<view class="cu-time">03-10</view>
-				<view class="cu-item text-blue">
-					<view class="content bg-blue shadow-blur">
-						<text>20:00</text> 【开发组-专业组技术带头人打分】
-						<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
-					</view>
-				</view>
-
-				<view class="cu-time">02-01</view>
-				<view class="cu-item text-blue">
-					<view class="bg-blue content shadow-blur">
-						<text>20:00</text> 【2019XX党支部支部互评】
-						<image class="timeline-item-delete" src="../../static/icon/delete-white.png" mode=""></image>
-					</view>
-				</view> -->
 			</view>
 		</view>
 	</view>
@@ -147,6 +105,7 @@
 	export default {
 		data() {
 			return {
+				loginFormShow: false,
 				wfbList: [],
 				yfbList: [],
 				ywcList: [],
@@ -156,37 +115,31 @@
 				title: 'Hello',
 				modalName: null,
 				addBtnShow: true,
-				token: this.$token
+				token: this.$token,
+				user:{}
 			}
 		},
 		onLoad() {
-			this.$api.get('/theme/findAll').then(res => {
-				console.log('res', res);
-			})
+			this.user = this.getGlobalUser() ? this.getGlobalUser() : {};
+			console.log(this.getLogined())
+			if(!this.getLogined()) {
+				this.loginFormShow = true;
+			}
 		},
 		onShow() {
-			this.getData();
+			if(this.getLogined()) {
+				this.getData();
+			}
 		},
 		mounted() {
 
 		},
-		computed: {
-			logined() {
-				return this.$store.state.logined
-			}
-		},
-		watch: {
-			logined: {
-				handler(newVal, oldVal) {
-					console.log(newVal, oldVal)
-					if (newVal) {
-						this.getData();
-					}
-				},
-				immediate: true
-			}
-		},
 		methods: {
+			loginHide(val) {
+				this.loginFormShow = false;
+				this.user = this.getGlobalUser() ? this.getGlobalUser() : {};
+				this.getData();
+			},
 			goToActivityPage(index) {
 
 			},
@@ -222,6 +175,8 @@
 						this.wfbList = res.data.wfb;
 						this.yfbList = res.data.yfb;
 						this.ywcList = res.data.ywc;
+					}else if(res.resCode == 100) {
+						this.loginFormShow = false;
 					}
 				})
 			},
@@ -240,11 +195,8 @@
 										title: '删除成功！',
 										icon: 'none'
 									})
-								} else {
-									uni.showToast({
-										title: res.resMsg,
-										icon: 'none'
-									})
+								} else if(res.resCode == 100) {
+									this.loginFormShow = false;
 								}
 							})
 						} else if (res.cancel) {
@@ -313,16 +265,17 @@
 		left: 0;
 		width: 750upx;
 		height: 80upx;
+		padding-right: 50upx;
 		display: flex;
-		justify-content: center;
+		justify-content: flex-end;
 		align-items: center;
 		z-index: 900;
 	}
 
 	.opt-btn {
-		position: fixed;
+		/* position: fixed;
 		bottom: 50upx;
-		left: 335upx;
+		left: 335upx; */
 		width: 80upx;
 		height: 80upx;
 		display: flex;

@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<login></login>
+		<login :loginFormShow="loginFormShow" @hide="loginHide"></login>
 		<cu-custom v-show="isBack" bgColor="bg-blue" :isBack="isBack">
 			<block slot="content" style="width: calc(100% - 100px);">{{activity && activity.bt}}</block>
 		</cu-custom>
@@ -59,6 +59,7 @@
 	export default {
 		data() {
 			return {
+				loginFormShow: false,
 				isBack: false,
 				hdid: null,
 				user: {},
@@ -71,24 +72,24 @@
 		mounted() {
 
 		},
-		computed: {
-			logined() {
-				return this.$store.state.logined
-			}
-		},
-		watch: {
-			logined: {
-				handler(newVal, oldVal) {
-					this.user = this.getGlobalUser() || {};
-					if (newVal) {
-						this.getData();
-					}
-				},
-				immediate: true
-			}
-		},
+// 		computed: {
+// 			logined() {
+// 				return this.$store.state.logined
+// 			}
+// 		},
+// 		watch: {
+// 			logined: {
+// 				handler(newVal, oldVal) {
+// 					this.user = this.getGlobalUser() || {};
+// 					if (newVal) {
+// 						this.getData();
+// 					}
+// 				},
+// 				immediate: true
+// 			}
+// 		},
 		onShow() {
-			if(this.logined || this.hdid) {
+			if(this.getLogined() || this.hdid) {
 				this.getData();
 			}
 		},
@@ -98,11 +99,17 @@
 			if (getCurrentPages().length > 1) {
 				this.isBack = true;
 			}
-			if (this.logined) {
-				this.getData();
+			if(!this.getLogined()) {
+				this.loginFormShow = true;
 			}
 		},
 		methods: {
+			loginHide() {
+				this.loginFormShow = false;
+				if (this.getLogined() || this.hdid) {
+					this.getData();
+				}
+			},
 			gotoCountPage() {
 				uni.navigateTo({
 					url: '../../pages/markCount/markCount?hdid=' + this.hdid
@@ -121,6 +128,8 @@
 						this.curTime = new Date().getTime(); 
 						this.strTime = new Date(Date.parse(this.activity.kssj.replace(/-/g, "/"))).getTime(); // 时间戳
 						this.endTime = new Date(Date.parse(this.activity.jssj.replace(/-/g, "/"))).getTime(); // 时间戳
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
@@ -132,11 +141,8 @@
 							icon: 'none'
 						})
 						this.gotoCodePage();
-					}else {
-						uni.showToast({
-							title: '操作失败！',
-							icon: 'none'
-						})
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
@@ -147,11 +153,8 @@
 							title: '操作成功！',
 							icon: 'none'
 						})
-					}else {
-						uni.showToast({
-							title: '操作失败！',
-							icon: 'none'
-						})
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},

@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<login></login>
+		<login :loginFormShow="loginFormShow" @hide="loginHide"></login>
 		<cu-custom v-show="isBack" bgColor="bg-blue" :isBack="isBack">
 			<block slot="content" style="width: calc(100% - 100px);">{{hdData.bt}}</block>
 		</cu-custom>
@@ -65,6 +65,7 @@
 	export default {
 		data() {
 			return {
+				loginFormShow: false,
 				isBack: false,
 				hdid: null,
 				hdData: {},
@@ -74,24 +75,24 @@
 				name: ''
 			};
 		},
-		computed: {
-			logined() {
-				return this.$store.state.logined
-			}
-		},
-		watch: {
-			logined: {
-				handler(newVal, oldVal) {
-					this.user = this.getGlobalUser() || {};
-					if (newVal && this.hdid) {
-						this.getData();
-					}
-				},
-				immediate: true
-			}
-		},
+// 		computed: {
+// 			logined() {
+// 				return this.$store.state.logined
+// 			}
+// 		},
+// 		watch: {
+// 			logined: {
+// 				handler(newVal, oldVal) {
+// 					this.user = this.getGlobalUser() || {};
+// 					if (newVal && this.hdid) {
+// 						this.getData();
+// 					}
+// 				},
+// 				immediate: true
+// 			}
+// 		},
 		onShow() {
-			if (this.logined && this.hdid) {
+			if (this.getLogined() && this.hdid) {
 				this.getData();
 			}
 		},
@@ -100,11 +101,17 @@
 			if (getCurrentPages().length > 1) {
 				this.isBack = true;
 			}
-			if (this.logined && this.hdid) {
-				this.getData();
+			if(!this.getLogined()) {
+				this.loginFormShow = true;
 			}
 		},
 		methods: {
+			loginHide() {
+				this.loginFormShow = false;
+				if (this.getLogined() || this.hdid) {
+					this.getData();
+				}
+			},
 			modalHide() {
 				this.modalShow = false;
 			},
@@ -114,11 +121,8 @@
 						this.modalData = res.data;
 						this.name = name;
 						this.modalShow = true;
-					}else {
-						uni.showToast({
-							title: '获取数据失败！',
-							icon: 'none'
-						})
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
@@ -133,6 +137,8 @@
 					if (res.resCode == 200) {
 						this.hdData = res.data.hddata;
 						this.result = res.data.result;
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			}

@@ -21,17 +21,43 @@
 <script>
 	export default {
 		name: "login",
+		props:{
+			loginFormShow: {
+				type: Boolean,
+				default: false
+			},
+		},
 		data() {
 			return {
-				loginFormShow: false,
 				zh: '',
-				mm: ''
+				mm: '',
+				// show: false
 			}
 		},
+// 		watch: {
+// 			loginFormShow: {
+// 				handler(newVal, oldVal) {
+// 					console.log(newVal, oldVal)
+// 					this.show = this.loginFormShow;
+// 					if (newVal) {
+// 						this.user = this.getGlobalUser() ? this.getGlobalUser() : {};
+// 						this.getData();
+// 					}
+// 				},
+// 				immediate: true
+// 			}
+// 		},
 		created() {
-			if (!this.getGlobalUser()) {
-				this.loginFormShow = true;
-			}
+// 			if(this.loginFormShow) {
+// 				console.log(111)
+// 				uni.removeStorageSync('token');
+// 				uni.removeStorageSync('logined');
+// 			}
+// 			
+			this.zh = this.getGlobalUser() != null && this.getGlobalUser().zh;
+// 			if (!this.getLogined()) {
+// 				this.loginFormShow = true;
+// 			}
 		},
 		methods: {
 			login() {
@@ -49,10 +75,12 @@
 						let data = res.data.data;
 						if(res.data.resCode == 200) {
 							this.$store.commit('setLogin', true)
+							uni.setStorageSync("logined", JSON.parse(JSON.stringify('true')));
 							uni.setStorageSync("userInfo", JSON.parse(JSON.stringify(data.user)));
 							uni.setStorageSync("token", JSON.parse(JSON.stringify(data.accessToken)));
+							this.$emit("hide", true) 
 							setTimeout(() => {
-								this.loginFormShow = false;
+								// this.loginFormShow = false;
 							}, 500)
 						}else {
 							console.log(111)

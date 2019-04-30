@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<login></login>
+		<login :loginFormShow="loginFormShow" @hide="loginHide"></login>
 		<cu-custom bgColor="bg-blue" :isBack="true">
 			<block slot="content">发起投票活动</block>
 		</cu-custom>
@@ -17,7 +17,7 @@
 			</view>
 			<view class="cu-form-group">
 				<view class="title">开始日期</view>
-				<picker mode="date" :value="activityForm.kssj" start="2015-09-01" end="2020-09-01" @change="startDateChange">
+				<picker mode="date" :value="activityForm.kssj" start="2019-01-01" end="2120-01-01" @change="startDateChange">
 					<view class="picker">
 						{{activityForm.kssj}}
 					</view>
@@ -25,7 +25,7 @@
 			</view>
 			<view class="cu-form-group">
 				<view class="title">结束日期</view>
-				<picker mode="date" :value="activityForm.jssj" start="2015-09-01" end="2020-09-01" @change="endDateChange">
+				<picker mode="date" :value="activityForm.jssj" start="2019-01-01" end="2120-01-01" @change="endDateChange">
 					<view class="picker">
 						{{activityForm.jssj}}
 					</view>
@@ -87,6 +87,7 @@
 	export default {
 		data() {
 			return {
+				loginFormShow: false,
 				paramsHdid: null,
 				activityForm: {
 					bt: '',
@@ -114,21 +115,27 @@
 		},
 		onLoad(params) {
 			this.paramsHdid = params.hdid;
-			console.log(this.hdid, params.hdid, myJson)
-			// params.hdid = 11;
-			if (params.hdid || this.hdid) {
-				this.$api.post('/theme/findAllInfoById', {
-					id: params.hdid || this.hdid
-				}).then((res) => {
-					if (res.resCode == 200) {
-						this.activityForm = res.data;
-						this.votelist = this.activityForm.votelist || [];
-					}
-				})
+			if (!this.getLogined()) {
+				this.loginFormShow = true;
 			}
 		},
 		onShow() {
 			if (this.paramsHdid || this.hdid) {
+				this.getData();
+			}
+		},
+		mounted() {
+
+		},
+		methods: {
+			...mapMutations(['saveVoteData', 'resetVoteData']),
+			loginHide() {
+				this.loginFormShow = false;
+				if (this.paramsHdid || this.hdid) {
+					this.getData();
+				}
+			},
+			getData() {
 				this.$api.post('/theme/findAllInfoById', {
 					id: this.paramsHdid || this.hdid
 				}).then((res) => {
@@ -137,17 +144,12 @@
 						this.activityForm.kssj = this.activityForm.kssj && this.activityForm.kssj.substring(0, 11);
 						this.activityForm.jssj = this.activityForm.jssj && this.activityForm.jssj.substring(0, 11);
 						this.votelist = this.activityForm.votelist || [];
+					} else if (res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
-			}
-		},
-		mounted() {
-
-		},
-		methods: {
-			...mapMutations(['saveVoteData', 'resetVoteData']),
+			},
 			createCode() {
-				console.log(this.paramsHdid || this.activityForm.id)
 				uni.navigateTo({
 					url: '../../pages/code/code?lx=mark&id=' + (this.paramsHdid || this.activityForm.id) + '&title=' + this.activityForm
 						.bt +
@@ -168,11 +170,8 @@
 										title: '删除成功！',
 										icon: 'none'
 									})
-								} else {
-									uni.showToast({
-										title: '删除失败！',
-										icon: 'none'
-									})
+								} else if (res.resCode == 100) {
+									this.loginFormShow = true;
 								}
 							})
 						} else if (res.cancel) {
@@ -216,13 +215,9 @@
 							title: '保存成功',
 							icon: 'none'
 						})
-					} else {
-						uni.showToast({
-							title: res.resMsg,
-							icon: 'none'
-						})
+					} else if (res.resCode == 100) {
+						this.loginFormShow = true;
 					}
-					console.log(res)
 				})
 			},
 			gotoVoteTitle() {

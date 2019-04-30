@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<login></login>
+		<login :loginFormShow="loginFormShow" @hide="loginHide"></login>
 		<cu-custom bgColor="bg-blue" isBack="true">
 			<block slot="content" style="width: calc(100% - 100px);">用户管理</block>
 		</cu-custom>
@@ -49,10 +49,22 @@
 	export default {
 		data() {
 			return {
+				loginFormShow: false,
 				userForm: {}
 			};
 		},
+		onLoad() {
+			if(!this.getLogined()) {
+				this.loginFormShow = true;
+			}
+		},
 		methods: {
+			loginHide() {
+				this.loginFormShow = false;
+				if (this.getLogined() && this.hdid && this.obid) {
+					this.getData();
+				}
+			},
 			jsChange(e) {
 				this.userForm.js = e.detail.value;
 			},
@@ -71,11 +83,8 @@
 							js: null,
 							mc: ''
 						}
-					}else {
-						uni.showToast({
-							title: "保存失败！",
-							icon: 'none'
-						})
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			}

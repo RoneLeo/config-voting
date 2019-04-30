@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<login></login>
+		<login :loginFormShow="loginFormShow" @hide="loginHide"></login>
 		<cu-custom bgColor="bg-blue" :isBack="true">
 			<block slot="content">新增/编辑投票题目</block>
 		</cu-custom>
@@ -158,17 +158,21 @@
 				},
 				numShow: false,
 				errorShow: false,
-				modalShow2: false
+				modalShow2: false,
+				loginFormShow: false,
 			};
 		},
 		created() {
 			console.log(this.$store.state.voteData.id);
 		},
+		onLoad() {
+			if(!this.getLogined()) {
+				this.loginFormShow = true;
+			}
+		},
 		methods: {
 			switchChange: function(e) {
 				this.formData.qt = e.target.value ? 1 : 0;
-				
-				console.log('switch2 发生 change 事件，携带值为', e.target.value)
 			},
 			modalHide2() {
 				this.errorShow = false;
@@ -176,7 +180,6 @@
 			},
 			saveData() {
 				this.formData.hdid = this.$store.state.voteData.id || 11;
-				console.log(this.formData, this.newOptions);
 				for (let key in this.formData) {
 					if (this.formData[key] === '' || this.formData[key] === null) {
 						this.errorShow = true;
@@ -200,12 +203,9 @@
 								icon: 'none'
 							})
 							uni.navigateBack()
-						}else {
-							uni.showToast({
-								title: res.resMsg,
-								icon: 'none'
-							})
-						}
+						}else if(res.resCode == 100) {
+						this.loginFormShow = true;
+					}
 					})
 				}
 			},
@@ -218,7 +218,6 @@
 					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album'], //从相册选择
 					success: (res) => {
-						console.log(res);
 						let tempFilePaths = res.tempFilePaths;
 						if (tempFilePaths.length) {
 							uni.uploadFile({

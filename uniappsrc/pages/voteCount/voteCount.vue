@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<login></login>
+		<login :loginFormShow="loginFormShow" @hide="loginHide"></login>
 		<cu-custom v-show="isBack" bgColor="bg-blue" :isBack="isBack">
 			<block slot="content" style="width: calc(100% - 100px);">{{hdData.bt}}</block>
 		</cu-custom>
@@ -62,6 +62,7 @@
 		data() {
 			return {
 				isBack: false,
+				loginFormShow: false,
 				hdData: {},
 				result: [],
 				percent: '48%',
@@ -73,24 +74,8 @@
 				modalData: []
 			};
 		},
-		computed: {
-			logined() {
-				return this.$store.state.logined
-			}
-		},
-		watch: {
-			logined: {
-				handler(newVal, oldVal) {
-					this.user = this.getGlobalUser() || {};
-					if (newVal && this.hdid) {
-						this.getData();
-					}
-				},
-				immediate: true
-			}
-		},
 		onShow() {
-			if (this.logined && this.hdid) {
+			if(this.getLogined() || this.hdid) {
 				this.getData();
 			}
 		},
@@ -99,11 +84,17 @@
 			if (getCurrentPages().length > 1) {
 				this.isBack = true;
 			}
-			if (this.logined && this.hdid) {
-				this.getData();
+			if(!this.getLogined()) {
+				this.loginFormShow = true;
 			}
 		},
 		methods:{
+			loginHide() {
+				this.loginFormShow = false;
+				if (this.getLogined() || this.hdid) {
+					this.getData();
+				}
+			},
 			lookDetail(name, id) {
 				this.$api.post('/voting/findAllQtByQid', {id: id}).then(res => {
 					if(res.resCode == 200) {
@@ -111,11 +102,8 @@
 						this.modalShow = true;
 						this.modalData = res.data;
 						console.log(this.modalData )
-					}else {
-						uni.showToast({
-							title: "获取数据失败！",
-							icon: 'none'
-						})
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			},
@@ -145,6 +133,8 @@
 							this.result[i].num = num;
 							// console.log(this.result[i].num)
 						}
+					}else if(res.resCode == 100) {
+						this.loginFormShow = true;
 					}
 				})
 			}

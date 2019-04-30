@@ -2,7 +2,11 @@
 	import Vue from 'vue'
 	export default {
 		onLaunch: function() {
-			uni.clearStorage();
+			console.log('onLunch')
+			// uni.clearStorage();
+			// uni.removeStorageSync('userInfo');
+			uni.removeStorageSync('token');
+			uni.removeStorageSync('logined');
 			uni.getSystemInfo({
 				success: function(e) {
 					// #ifndef MP
@@ -30,7 +34,7 @@
 		onShow: function() {
 			// console.log('App Show', this.getGlobalUser())
 
-			// console.log('App Show')
+			console.log('App Show')
 		},
 		onHide: function() {
 			// console.log('App Hide')

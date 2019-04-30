@@ -21,13 +21,12 @@
 						<view class="ques-td" v-for="(opt, optIndex) in res.result">
 							<text v-show="opt.xxlx == '1' || opt.xxlx == '3' || opt.xxlx == '4'" class="opt-name">{{opt.xxmc}}（{{opt.sl}}票）
 								<text v-show="opt.xxlx == '4' && opt.sl" @tap="lookDetail(res.vote.bt, opt.dxid)" class='cu-tag line-blue radius' style="margin-left: 20upx;border-color: transparant;">查看</text>
-								<!-- <text   style="display: inline-block;border: 1px solid #ededed;padding: 0 10upx;border-radius">查看</text> -->
 							</text>
 							<view v-show="opt.xxlx == '2'" class="opt-name" style="width: 200upx height: 150upx;">
 								<image :src="opt.xxmc" mode="" style="width: 180upx; height: 150upx;margin-right: 20upx;"></image> ({{opt.sl}}票)
 							</view>
 							<view v-show="opt.xxlx == '1' || opt.xxlx == '3' || opt.xxlx == '4'" class="cu-progress round sm striped">
-								<view :class="'bg-' + (colorList[Math.floor(Math.random()*5)])" :style="[{ width: (opt.sl/res.num) * 100 ? (opt.sl/res.num) * 100+'%' :''}]">{{(opt.sl/res.num) * 100}}% </view>
+								<view :class="'bg-' + (colorList[Math.floor(Math.random()*5)])" :style="[{ width: (opt.sl/res.vote.sl) * 100 ? (opt.sl/res.vote.sl) * 100+'%' :''}]">{{((opt.sl/res.vote.sl) * 100).toFixed(2)}}% </view>
 							</view>
 						</view>
 					</view>
@@ -121,18 +120,6 @@
 					if (res.resCode == 200) {
 						this.hdData = res.data.hddata;
 						this.result = res.data.result;
-						for(let i = 0; i < this.result.length; i ++) {
-							let num = 0;
-							for(let j = 0, len = this.result[i].result.length; j < len; j ++) {
-								if(this.result[i].result[j].sl == 0) {
-									break;
-								}else {
-									num += this.result[i].result[j].sl;
-								}
-							}
-							this.result[i].num = num;
-							// console.log(this.result[i].num)
-						}
 					}else if(res.resCode == 100) {
 						this.loginFormShow = true;
 					}

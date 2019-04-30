@@ -1,7 +1,7 @@
 <template>
 	<view class="page">
 		<login :loginFormShow="loginFormShow" @hide="loginHide"></login>
-		<view v-show="addBtnShow && user.js" style="position:fixed; left: 500upx; bottom: 50upx;display: flex;width: 200upx;justify-content: space-around;z-index: 900;">
+		<view v-show="addBtnShow && user.js" style="position:fixed; left: 540upx; bottom: 50upx;display: flex;width: 200upx;justify-content: space-around;z-index: 900;">
 			<view @tap="addBtnShowChange" class="opt-btn shadow-blur bg-blue">
 				+
 			</view>
